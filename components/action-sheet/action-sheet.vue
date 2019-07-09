@@ -1,7 +1,8 @@
-<template>
+﻿<template>
   <div class="md-action-sheet">
     <md-popup
       v-model="isActionSheetShow"
+      lighter-mask
       position="bottom"
       prevent-scroll
       @show="$_onShow"
@@ -16,7 +17,8 @@
               :class="{
                 'active': index === clickIndex,
                 'disabled': index=== invalidIndex,
-                'md-action-sheet-item': true
+                'md-action-sheet-item': true,
+                'warning':item.type=='warning'
               }"
               @click="$_onSelect(item, index)"
             >
@@ -25,155 +27,186 @@
               </div>
             </li>
           </template>
-          <li class="md-action-sheet-cancel" @click="$_onCancel">{{ cancelText }}</li>
+          <li
+            :class="['md-action-sheet-cancel',{'global-is-iphoneX':isIphoneX}]"
+            @click="$_onCancel"
+          >取&#12288消</li>
         </ul>
       </div>
     </md-popup>
   </div>
 </template>
 
-<script>import Popup from '../popup'
-import {inArray} from '../_util'
+<script>
+import Popup from "../popup";
+import { inArray } from "../_util";
 
 export default {
-  name: 'md-action-sheet',
-
+  name: "md-action-sheet",
   components: {
-    [Popup.name]: Popup,
+    [Popup.name]: Popup
   },
-
   props: {
     value: {
       type: Boolean,
-      default: false,
+      default: false
     },
     title: {
       type: String,
-      default: '',
+      default: ""
     },
     options: {
       type: Array,
       default() {
-        return []
-      },
+        return [];
+      }
     },
     defaultIndex: {
       type: Number,
-      default: -1,
+      default: -1
     },
     invalidIndex: {
       type: Number,
-      default: -1,
+      default: -1
     },
     cancelText: {
       type: String,
-      default: '取消',
+      default: "取消"
     },
+    isIphoneX: {
+      type: Boolean,
+      default: false
+    },
+    type: {
+      type: String,
+      default: "normal"
+    }
   },
-
   data() {
     return {
       isActionSheetShow: this.value,
       clickIndex: -1,
-      scroller: '',
-    }
+      scroller: ""
+    };
   },
-
   watch: {
     value(newVal) {
-      this.isActionSheetShow = newVal
-    },
+      this.isActionSheetShow = newVal;
+    }
   },
-
   created() {
-    this.clickIndex = this.defaultIndex
+    //this.clickIndex = this.defaultIndex;
   },
-
   methods: {
     // MARK: events handler, 如 $_onButtonClick
     $_onShow() {
-      this.$emit('show')
+      this.$emit("show");
     },
     $_onHide() {
-      this.$emit('hide')
-      this.$_hideSheet()
+      this.$emit("hide");
+      this.$_hideSheet();
     },
     $_onSelect(item, index) {
       if (index === this.invalidIndex || inArray(this.invalidIndex, index)) {
-        return
+        return;
       }
-      this.clickIndex = index
-      this.$emit('selected', item)
-      this.$_hideSheet()
+      this.clickIndex = index;
+      this.$emit("selected", item);
+      this.$_hideSheet();
     },
     $_onCancel() {
-      this.$emit('cancel')
-      this.$_hideSheet()
+      this.$emit("cancel");
+      this.$_hideSheet();
     },
     $_hideSheet() {
-      this.isActionSheetShow = false
-      this.$emit('input', false)
-    },
-  },
+      this.isActionSheetShow = false;
+      this.clickIndex = -1;
+      this.$emit("input", false);
+    }
+  }
+};
+</script>
+
+<style lang="stylus" scoped>
+.global-is-iphoneX {
+  margin-bottom: 24px;
 }
-</script>
 
-<style lang="stylus">
-.md-action-sheet
-  color action-sheet-color
-  -webkit-font-smoothing antialiased
-  .md-popup
-    z-index action-sheet-zindex
-  .md-popup-box
-    background-color color-bg-base
+.warning {
+  color: #F12701;
+}
+.md-action-sheet {
+  color: action-sheet-color;
+  -webkit-font-smoothing: antialiased;
+  .md-popup {
+    z-index: action-sheet-zindex;
+  }
+.md-popup-box {
+    background-color: color-bg-base;
+  }
+}
+.md-action-sheet-content {
+  position: relative;
+  width: 100%;
+  font-size: 18px;
+  text-align: center;
+  overflow: auto;
+  background: #ffffff;
+}
+.md-action-sheet-header {
+  position: relative;
+  vertical-height(action-sheet-height);
+  hairline(bottom, color-border-base);
+  word-ellipsis();
+  overflow: visible;
+  height: 50px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  font-size: 13px;
+  color: #898989;
+  letter-spacing: -0.27px;
+  padding: 0 32px;
+  border-bottom: 1px solid #F4F4F4;
+}
+.md-action-sheet-item {
+  position: relative;
+  vertical-height(action-sheet-height);
+  box-sizing: border-box;
+  font-size: action-sheet-font-size;
+  transition: background-color 0.3s;
+  -webkit-user-select none {
+    height: 50px;
+  }
+  line-height: 50px;
+  &.active {
+    background-color: #F4F4F4;
+  }
+  &.disabled .md-action-sheet-item-section {
+    opacity: action-sheet-disabled-opacity;
+  }
+  &:active {
+    background-color: #F4F4F4;
+    &.disabled {
+      background-color: transparent;
+    }
+  }
+}
+.md-action-sheet-cancel {
+  height: 56px;
+  line-height: 50px;
 
-.md-action-sheet-content
-  position relative
-  width 100%
-  font-size action-sheet-font-size
-  background action-sheet-bg
-  text-align center
-  overflow auto
-
-.md-action-sheet-header
-  position relative
-  vertical-height(action-sheet-height)
-  hairline(bottom, color-border-base)
-  word-ellipsis()
-  overflow visible
-
-.md-action-sheet-item
-  position relative
-  vertical-height(action-sheet-height)
-  padding 0 action-sheet-padding-h
-  box-sizing border-box
-  font-size action-sheet-font-size
-  transition background-color .3s
-  -webkit-user-select none
-  &.active
-    color action-sheet-color-highlight
-  &.disabled .md-action-sheet-item-section
-    opacity action-sheet-disabled-opacity
-  &:first-of-type
-    .md-action-sheet-item-wrapper:after
-      display none
-  &:active
-    background-color color-bg-tap
-    &.disabled
-      background-color transparent
-
-.md-action-sheet-item-wrapper
-  position relative
-  hairline(top, color-border-base)
-
-.md-action-sheet-cancel
-  height 132px
-  line-height 120px
-  color action-sheet-color-cancel
-  font-weight font-weight-medium
-  &::before
-    display block
-    content ''
-    height 12px
-    background action-sheet-cancel-gap-bg
+  &::before {
+    display: block;
+    content: '';
+    height: 6px;
+    background: #f9fafb;
+  }
+}
 </style>
