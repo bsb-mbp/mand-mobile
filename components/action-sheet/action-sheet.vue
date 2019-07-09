@@ -9,7 +9,7 @@
       @hide="$_onHide"
     >
       <div class="md-action-sheet-content">
-        <header class="md-action-sheet-header" v-if="title">{{ title }}</header>
+        <header v-if="title" class="md-action-sheet-header">{{title}}</header>
         <ul class="md-action-sheet-list">
           <template v-for="(item, index) in options">
             <li
@@ -30,7 +30,7 @@
           <li
             :class="['md-action-sheet-cancel',{'global-is-iphoneX':isIphoneX}]"
             @click="$_onCancel"
-          >取&#12288消</li>
+          >取&#12288;消</li>
         </ul>
       </div>
     </md-popup>
@@ -38,11 +38,11 @@
 </template>
 
 <script>
-import Popup from "../popup";
-import { inArray } from "../_util";
+import Popup from '../popup';
+import {inArray} from '../_util';
 
 export default {
-  name: "md-action-sheet",
+  name: 'md-action-sheet',
   components: {
     [Popup.name]: Popup
   },
@@ -53,7 +53,7 @@ export default {
     },
     title: {
       type: String,
-      default: ""
+      default: ''
     },
     options: {
       type: Array,
@@ -71,7 +71,7 @@ export default {
     },
     cancelText: {
       type: String,
-      default: "取消"
+      default: '取消'
     },
     isIphoneX: {
       type: Boolean,
@@ -79,14 +79,14 @@ export default {
     },
     type: {
       type: String,
-      default: "normal"
+      default: 'normal'
     }
   },
   data() {
     return {
       isActionSheetShow: this.value,
       clickIndex: -1,
-      scroller: ""
+      scroller: ''
     };
   },
   watch: {
@@ -95,15 +95,15 @@ export default {
     }
   },
   created() {
-    //this.clickIndex = this.defaultIndex;
+    // this.clickIndex = this.defaultIndex;
   },
   methods: {
     // MARK: events handler, 如 $_onButtonClick
     $_onShow() {
-      this.$emit("show");
+      this.$emit('show');
     },
     $_onHide() {
-      this.$emit("hide");
+      this.$emit('hide');
       this.$_hideSheet();
     },
     $_onSelect(item, index) {
@@ -111,102 +111,85 @@ export default {
         return;
       }
       this.clickIndex = index;
-      this.$emit("selected", item);
+      this.$emit('selected', item);
       this.$_hideSheet();
     },
     $_onCancel() {
-      this.$emit("cancel");
+      this.$emit('cancel');
       this.$_hideSheet();
     },
     $_hideSheet() {
       this.isActionSheetShow = false;
       this.clickIndex = -1;
-      this.$emit("input", false);
+      this.$emit('input', false);
     }
   }
 };
 </script>
 
 <style lang="stylus" scoped>
-.global-is-iphoneX {
-  margin-bottom: 24px;
-}
-
-.warning {
-  color: #F12701;
-}
-.md-action-sheet {
-  color: action-sheet-color;
-  -webkit-font-smoothing: antialiased;
-  .md-popup {
-    z-index: action-sheet-zindex;
-  }
-.md-popup-box {
-    background-color: color-bg-base;
-  }
-}
-.md-action-sheet-content {
-  position: relative;
-  width: 100%;
-  font-size: 18px;
-  text-align: center;
-  overflow: auto;
-  background: #ffffff;
-}
-.md-action-sheet-header {
-  position: relative;
-  vertical-height(action-sheet-height);
-  hairline(bottom, color-border-base);
-  word-ellipsis();
-  overflow: visible;
-  height: 50px;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: flex;
-  -webkit-box-align: center;
-  -webkit-align-items: center;
-  align-items: center;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  justify-content: center;
-  font-size: 13px;
-  color: #898989;
-  letter-spacing: -0.27px;
-  padding: 0 32px;
-  border-bottom: 1px solid #F4F4F4;
-}
-.md-action-sheet-item {
-  position: relative;
-  vertical-height(action-sheet-height);
-  box-sizing: border-box;
-  font-size: action-sheet-font-size;
-  transition: background-color 0.3s;
-  -webkit-user-select none {
-    height: 50px;
-  }
-  line-height: 50px;
-  &.active {
-    background-color: #F4F4F4;
-  }
-  &.disabled .md-action-sheet-item-section {
-    opacity: action-sheet-disabled-opacity;
-  }
-  &:active {
-    background-color: #F4F4F4;
-    &.disabled {
-      background-color: transparent;
-    }
-  }
-}
-.md-action-sheet-cancel {
-  height: 56px;
-  line-height: 50px;
-
-  &::before {
-    display: block;
-    content: '';
-    height: 6px;
-    background: #f9fafb;
-  }
-}
+.global-is-iphoneX
+  margin-bottom 24px
+.warning
+  color #F12701
+.md-action-sheet
+  /* color action-sheet-color */
+  -webkit-font-smoothing antialiased
+.md-popup
+  z-index action-sheet-zindex
+  .md-popup-box
+    background-color color-bg-base
+.md-action-sheet-content
+  position relative
+  width 100%
+  font-size 18px
+  text-align center
+  overflow auto
+  background #ffffff
+.md-action-sheet-header
+  position relative
+  vertical-height(action-sheet-height)
+  hairline(bottom, color-border-base)
+  word-ellipsis()
+  overflow visible
+  height 50px
+  display -webkit-box
+  display -webkit-flex
+  display flex
+  -webkit-box-align center
+  -webkit-align-items center
+  align-items center
+  -webkit-box-pack center
+  -webkit-justify-content center
+  justify-content center
+  font-size 13px
+  color #898989
+  letter-spacing -0.27px
+  padding 0 32px
+  border-bottom 1px solid #F4F4F4
+.md-action-sheet-item
+  position relative
+  vertical-height(action-sheet-height)
+  box-sizing border-box
+  font-size action-sheet-font-size
+  transition background-color 0.3s
+  -webkit-user-select none
+  height 50px
+  line-height 50px
+  &.active
+    background-color #F4F4F4
+  &.disabled .md-action-sheet-item-section
+    opacity action-sheet-disabled-opacity
+  &:active
+    background-color #F4F4F4
+    &.disabled
+      background-color transparent
+.md-action-sheet-cancel
+  height 56px
+  line-height 50px
+  &::before
+    display:block
+    content ''
+    height 6px
+    background #f9fafb
 </style>
