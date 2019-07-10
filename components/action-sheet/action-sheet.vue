@@ -133,12 +133,11 @@ export default {
 .warning
   color #F12701
 .md-action-sheet
-  /* color action-sheet-color */
   -webkit-font-smoothing antialiased
 .md-popup
   z-index action-sheet-zindex
   .md-popup-box
-    background-color color-bg-base
+    background-color #fff
 .md-action-sheet-content
   position relative
   width 100%
@@ -148,10 +147,6 @@ export default {
   background #ffffff
 .md-action-sheet-header
   position relative
-  vertical-height(action-sheet-height)
-  hairline(bottom, color-border-base)
-  word-ellipsis()
-  overflow visible
   height 50px
   display flex
   align-items center
@@ -162,9 +157,9 @@ export default {
   border-bottom 1px solid #F4F4F4
 .md-action-sheet-item
   position relative
-  vertical-height(action-sheet-height)
+  /* vertical-height(action-sheet-height) */
   box-sizing border-box
-  font-size action-sheet-font-size
+  /* font-size action-sheet-font-size */
   transition background-color 0.3s
   -webkit-user-select none
   height 50px
@@ -172,7 +167,7 @@ export default {
   &.active
     background-color #F4F4F4
   &.disabled .md-action-sheet-item-section
-    opacity action-sheet-disabled-opacity
+    opacity 0.3
   &:active
     background-color #F4F4F4
     &.disabled
