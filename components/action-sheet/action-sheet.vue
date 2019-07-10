@@ -18,7 +18,7 @@
                 'active': index === clickIndex,
                 'disabled': index=== invalidIndex,
                 'md-action-sheet-item': true,
-                'warning':item.type=='warning'
+                'warning':item.type==='warning'
               }"
               @click="$_onSelect(item, index)"
             >
@@ -28,7 +28,7 @@
             </li>
           </template>
           <li
-            :class="['md-action-sheet-cancel',{'global-is-iphoneX':isIphoneX}]"
+            :class="['md-action-sheet-cancel',{'global-is-iphone-x': isIphoneX}]"
             @click="$_onCancel"
           >取&#12288;消</li>
         </ul>
@@ -128,7 +128,7 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.global-is-iphoneX
+.global-is-iphone-x
   margin-bottom 24px
 .warning
   color #F12701
@@ -188,7 +188,7 @@ export default {
   height 56px
   line-height 50px
   &::before
-    display:block
+    display block
     content ''
     height 6px
     background #f9fafb
