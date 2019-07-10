@@ -16,9 +16,9 @@
               :key="index"
               :class="{
                 'active': index === clickIndex,
-                'disabled': index=== invalidIndex,
+                'disabled': index === invalidIndex,
                 'md-action-sheet-item': true,
-                'warning':item.type==='warning'
+                'warning': item.type === 'warning'
               }"
               @click="$_onSelect(item, index)"
             >
@@ -153,18 +153,11 @@ export default {
   word-ellipsis()
   overflow visible
   height 50px
-  display -webkit-box
-  display -webkit-flex
   display flex
-  -webkit-box-align center
-  -webkit-align-items center
   align-items center
-  -webkit-box-pack center
-  -webkit-justify-content center
   justify-content center
   font-size 13px
   color #898989
-  letter-spacing -0.27px
   padding 0 32px
   border-bottom 1px solid #F4F4F4
 .md-action-sheet-item
