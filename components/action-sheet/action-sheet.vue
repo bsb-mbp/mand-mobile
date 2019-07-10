@@ -95,10 +95,8 @@ export default {
     }
   },
   created() {
-    // this.clickIndex = this.defaultIndex;
   },
   methods: {
-    // MARK: events handler, 如 $_onButtonClick
     $_onShow() {
       this.$emit('show');
     },
@@ -157,9 +155,7 @@ export default {
   border-bottom 1px solid #F4F4F4
 .md-action-sheet-item
   position relative
-  /* vertical-height(action-sheet-height) */
   box-sizing border-box
-  /* font-size action-sheet-font-size */
   transition background-color 0.3s
   -webkit-user-select none
   height 50px
