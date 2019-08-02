@@ -154,6 +154,10 @@ export default {
 
       if (window.plus && this.fullScreen) {
         if (val) {
+          if (this.nativeTitleHeight === 0) {
+            const fubarWrapper = document.querySelector('.bob-wrapper');
+            fubarWrapper && (fubarWrapper.style['overflow-y'] = 'visible');
+          }
           const maskStyle = {backgroundColor: '#ffffff'};
           this.nativeViewPatches = fullScreenPatchUtil.createNativeViewPatches(maskStyle, this.nativeTitleHeight);
           this.nativeViewPatches.forEach(patch => {
@@ -164,6 +168,10 @@ export default {
           }, false);
         }
         else {
+          if (this.nativeTitleHeight === 0) {
+            const fubarWrapper = document.querySelector('.bob-wrapper');
+            fubarWrapper && (fubarWrapper.style['overflow-y'] = 'auto');
+          }
           fullScreenPatchUtil.destoryNativeViewPatches(this.nativeViewPatches);
         }
       }
@@ -187,7 +195,7 @@ export default {
       if (window.plus && this.fullScreen) {
         const pageOffsetTop =
           fullScreenPatchUtil.getCurrentWebviewOffsetTop()
-          + fullScreenPatchUtil.getCurrentWebviewTitleTop(false, this.nativeTitleHeight);
+          + fullScreenPatchUtil.getCurrentWebviewTitleTop(this.nativeTitleHeight);
 
         if (!fullScreenPatchUtil.isNativeTitleDocking()) {
           padding.top -= pageOffsetTop;

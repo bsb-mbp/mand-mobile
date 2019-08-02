@@ -7,6 +7,8 @@
       prevent-scroll
       @show="$_onShow"
       @hide="$_onHide"
+      :native-title-height="nativeTitleHeight"
+      :html-title-docking="htmlTitleDocking"
     >
       <div class="md-action-sheet-content">
         <header v-if="title" class="md-action-sheet-header">{{title}}</header>
@@ -80,6 +82,14 @@ export default {
     type: {
       type: String,
       default: 'normal'
+    },
+    nativeTitleHeight: {
+      type: Number,
+      default: 44
+    },
+    htmlTitleDocking: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
