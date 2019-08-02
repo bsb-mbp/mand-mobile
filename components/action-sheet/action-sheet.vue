@@ -30,7 +30,7 @@
             </li>
           </template>
           <li
-            :class="['md-action-sheet-cancel',{'global-is-iphone-x': isIphoneX}]"
+            :class="['md-action-sheet-cancel', {'global-is-iphone-x': isIphoneX}, {'active': 99 === clickIndex}]"
             @click="$_onCancel"
           >取&#12288;消</li>
         </ul>
@@ -123,6 +123,7 @@ export default {
       this.$_hideSheet();
     },
     $_onCancel() {
+      this.clickIndex = 99;
       this.$emit('cancel');
       this.$_hideSheet();
     },
@@ -170,12 +171,15 @@ export default {
   -webkit-user-select none
   height 50px
   line-height 50px
+  border-top 1px solid #F4F4F4
   &.active
     background-color #F4F4F4
   &.disabled .md-action-sheet-item-section
     opacity 0.3
   &:active
     background-color #F4F4F4
+  &:first-of-type 
+    border-top 1px solid transparent
     &.disabled
       background-color transparent
 .md-action-sheet-cancel
@@ -186,4 +190,6 @@ export default {
     content ''
     height 6px
     background #f9fafb
+   &:active
+    background-color #F4F4F4 
 </style>
