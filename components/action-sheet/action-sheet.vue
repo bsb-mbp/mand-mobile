@@ -28,7 +28,7 @@
             </li>
           </template>
           <li
-            :class="['md-action-sheet-cancel',{'global-is-iphone-x': isIphoneX},{'active': 99 === clickIndex}]"
+            :class="['md-action-sheet-cancel', {'global-is-iphone-x': isIphoneX}, {'active': 99 === clickIndex}]"
             @click="$_onCancel"
           >取&#12288;消</li>
         </ul>
@@ -169,7 +169,7 @@ export default {
   &:active
     background-color #F4F4F4
   &:first-of-type 
-    border-top: 1px solid transparent
+    border-top 1px solid transparent
     &.disabled
       background-color transparent
 .md-action-sheet-cancel
@@ -180,7 +180,6 @@ export default {
     content ''
     height 6px
     background #f9fafb
-   &:active {
-    background-color: #F4F4F4;
-  }
+   &:active
+    background-color #F4F4F4 
 </style>
