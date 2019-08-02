@@ -159,12 +159,13 @@ export default {
       this.preventScroll && this.$_preventScroll(true)
 
       if (window.plus && this.hasMask) {
-        const maskStyle = {backgroundColor: '#000000', opacity: 0.8};
+        const maskStyle = {backgroundColor: '#000000', opacity: this.lighterMask ? 0.3 : 0.8};
         this.nativeViewPatches = fullScreenPatchUtil.createNativeViewPatches(maskStyle, this.nativeTitleHeight);
         this.nativeViewPatches.forEach(patch => {
           patch.show();
         });
-        window.addEventListener('beforeunload', () => {
+        const pageHideEventName = window.plus && window.plus.os.name === 'iOS' ? 'pagehide' : 'beforeunload';
+        window.addEventListener(pageHideEventName, () => {
           fullScreenPatchUtil.destoryNativeViewPatches(this.nativeViewPatches);
         });
       }
