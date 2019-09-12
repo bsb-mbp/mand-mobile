@@ -8,7 +8,6 @@
       @show="$_onShow"
       @hide="$_onHide"
       :native-title-height="nativeTitleHeight"
-      :html-title-docking="htmlTitleDocking"
     >
       <div class="md-action-sheet-content">
         <header v-if="title" class="md-action-sheet-header">{{title}}</header>
@@ -42,6 +41,7 @@
 <script>
 import Popup from '../popup';
 import {inArray} from '../_util';
+import fullScreenPatchUtil from '@business/fullscreen-patch-util';
 
 export default {
   name: 'md-action-sheet',
@@ -75,10 +75,6 @@ export default {
       type: String,
       default: '取消'
     },
-    isIphoneX: {
-      type: Boolean,
-      default: false
-    },
     type: {
       type: String,
       default: 'normal'
@@ -87,16 +83,18 @@ export default {
       type: Number,
       default: 44
     },
-    htmlTitleDocking: {
+    noBottomFixed: {
       type: Boolean,
       default: false
     }
   },
   data() {
+    const isIphoneX = fullScreenPatchUtil.getStatusBarHeight() === 44 && !this.noBottomFixed;
     return {
       isActionSheetShow: this.value,
       clickIndex: -1,
-      scroller: ''
+      scroller: '',
+      isIphoneX
     };
   },
   watch: {
@@ -138,7 +136,7 @@ export default {
 
 <style lang="stylus" scoped>
 .global-is-iphone-x
-  margin-bottom 24px
+  margin-bottom 34px
 .warning
   color #F12701
 .md-action-sheet
@@ -178,7 +176,7 @@ export default {
     opacity 0.3
   &:active
     background-color #F4F4F4
-  &:first-of-type 
+  &:first-of-type
     border-top 1px solid transparent
     &.disabled
       background-color transparent
@@ -191,5 +189,5 @@ export default {
     height 6px
     background #f9fafb
    &:active
-    background-color #F4F4F4 
+    background-color #F4F4F4
 </style>

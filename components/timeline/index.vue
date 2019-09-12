@@ -453,7 +453,7 @@
         z-index 1
         .time-wrapper
           font-size: 13px
-          width: 75px
+          width: 80px
           display flex
           align-items center
           justify-content flex-end
@@ -549,7 +549,7 @@
           height steps-border-size
           background-color steps-color-active
       &.vertical-bar
-        left 98px
+        left 103px
         margin-top -7px
         margin-bottom -7px
         width steps-border-size
