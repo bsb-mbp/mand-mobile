@@ -8,6 +8,7 @@
       @show="$_onShow"
       @hide="$_onHide"
       :native-title-height="nativeTitleHeight"
+      no-native-patch
     >
       <div class="md-action-sheet-content">
         <header v-if="title" class="md-action-sheet-header">{{title}}</header>
