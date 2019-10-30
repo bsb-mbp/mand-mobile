@@ -72,7 +72,7 @@
         v-show="!isInputEmpty && isInputFocus"
         @click="$_clearInput"
       >
-        <md-icon name="clear"></md-icon>
+        <md-icon name="clear" size="xxs"></md-icon>
       </div>
 
       <!-- ------------ -->
@@ -114,7 +114,8 @@
   </md-field-item>
 </template>
 
-<script>import Icon from '../icon'
+<script>
+import Icon from '../icon'
 import FieldItem from '../field-item'
 import NumberKeyboard from '../number-keyboard'
 import {getCursorsPosition, setCursorsPosition} from './cursor'
@@ -479,10 +480,10 @@ export default {
       this.$emit('focus', this.name)
     },
     $_onBlur() {
-      setTimeout(() => {
-        this.isInputFocus = false
-        this.$emit('blur', this.name)
-      }, 100)
+      // setTimeout(() => {
+      //   this.isInputFocus = false
+      //   this.$emit('blur', this.name)
+      // }, 100)
     },
     $_onFakeInputClick(event) {
       if (this.isDisabled || this.readonly) {
@@ -533,9 +534,14 @@ export default {
     },
   },
 }
-</script>
+
+</script>
 
 <style lang="stylus">
+@require "./../_style/mixin/util.styl"
+@require "./../_style/mixin/theme.components.styl"
+@require "./../_style/mixin/theme.basic.styl"
+@require "./../../theme.custom.styl"
 .md-input-item
   .md-field-item-content
     padding-top 0
@@ -545,7 +551,6 @@ export default {
     align-items center
 
 .md-input-item-clear
-  padding 10px 0
   color input-item-icon
   .md-icon
     display flex

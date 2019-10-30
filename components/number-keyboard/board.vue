@@ -63,7 +63,8 @@
   </div>
 </template>
 
-<script>import {noop} from '../_util'
+<script>
+import {noop} from '../_util'
 import Key from './key'
 
 export default {
@@ -143,9 +144,14 @@ export default {
     },
   },
 }
-</script>
+
+</script>
 
 <style lang="stylus">
+@require "./../_style/mixin/util.styl"
+@require "./../_style/mixin/theme.components.styl"
+@require "./../_style/mixin/theme.basic.styl"
+@require "./../../theme.custom.styl"
 .md-number-keyboard-container
   position relative
   -webkit-user-select none

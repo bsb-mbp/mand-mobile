@@ -30,7 +30,8 @@
   </div>
 </template>
 
-<script>import Icon from '../icon'
+<script>
+import Icon from '../icon'
 
 export default {
   name: 'md-field-item',
@@ -98,9 +99,14 @@ export default {
     },
   },
 }
-</script>
+
+</script>
 
 <style lang="stylus">
+@require "./../_style/mixin/util.styl"
+@require "./../_style/mixin/theme.components.styl"
+@require "./../_style/mixin/theme.basic.styl"
+@require "./../../theme.custom.styl"
 .md-field-item
   position relative
 

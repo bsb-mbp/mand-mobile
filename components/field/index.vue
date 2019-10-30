@@ -19,7 +19,8 @@
   </fieldset>
 </template>
 
-<script>export default {
+<script>
+export default {
   name: 'md-field',
 
   props: {
@@ -47,9 +48,14 @@
     }
   },
 }
-</script>
+
+</script>
 
 <style lang="stylus">
+@require "./../_style/mixin/util.styl"
+@require "./../_style/mixin/theme.components.styl"
+@require "./../_style/mixin/theme.basic.styl"
+@require "./../../theme.custom.styl"
 .md-field
   padding field-padding-v field-padding-h
   border none
