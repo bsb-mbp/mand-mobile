@@ -1,32 +1,41 @@
 <template>
+<div class="amount amount-wrapper">
+    <label class="md-field-item-label">{{label}}</label>
   <div
     class="md-stepper"
     :class="{'disabled': disabled}"
   >
-    <div
+    <button
       class="md-stepper-button md-stepper-button-reduce"
       :class="{'disabled': isMin}"
       @click="$_reduce"
+      :disabled = isMin
     >
-    </div>
+      <div class="outline"></div>
+    </button>
     <div class="md-stepper-number">
       <input type="tel"
         :size="contentLength"
+        :maxlength ="contentLength"
         :value="currentNum"
         :readOnly="readOnly"
         @input="$_onInput"
         @blur="$_onChange">
     </div>
-    <div
+    <button
       class="md-stepper-button md-stepper-button-add"
+      :disabled = isMax
       :class="{'disabled': isMax}"
       @click="$_add"
     >
-    </div>
+      <div class="outline"></div>
+    </button>
   </div>
+</div>
 </template>
 
-<script>import {warn} from '../_util'
+<script>
+import {warn} from '../_util'
 function getDecimalNum(num) {
   try {
     return num.toString().split('.')[1].length
@@ -56,6 +65,10 @@ export default {
   components: {},
 
   props: {
+    label: {
+      type: String,
+      default: ""
+    },
     defaultValue: {
       type: [Number, String],
       default: 0,
@@ -94,17 +107,17 @@ export default {
     return {
       isMin: false,
       isMax: false,
-      currentNum: 0,
+      currentNum: 0
     }
   },
 
   computed: {
     contentLength() {
       if (!this.value) {
-        return 2
+        return 12
       }
       const length = this.value.toString().length
-      return length > 2 ? length : 2
+      return length > 12 ? length : 12
     },
   },
 
@@ -196,75 +209,102 @@ export default {
       this.currentNum = formatted
     },
     $_onChange() {
-      this.currentNum = this.$_getCurrentNum(this.currentNum)
+      this.currentNum = this.$_getCurrentNum(this.currentNum) 
     },
   },
 }
-</script>
+
+</script>
 
 <style lang="stylus">
-.md-stepper
-  color stepper-color
-  -webkit-font-smoothing antialiased
-  font-size stepper-font-size
-  height stepper-height
-  display flex
-  &.disabled
-    .md-stepper-button
-      &:before,
-      &:after
-        opacity stepper-disabled-opacity
-    input
-      opacity stepper-disabled-opacity
-
+.amount.amount-wrapper
+    background-color #ffffff
+    padding 0 17px
+    display flex
+    align-items center
+    justify-content space-between
+  .md-stepper
+    color stepper-color
+    -webkit-font-smoothing antialiased
+    font-size 16px
+    display flex
+    align-items center
+    justify-content space-between
+    &.disabled
+      .md-stepper-button
+        &:before,
+        &:after
+          background-color #c9c9c9
+      input
+        opacity .3
+.amount.amount-wrapper > .md-field-item-label
+    margin-right 10px
 .md-stepper-button
   position relative
-  width stepper-width-button
-  height stepper-height
-  background-color stepper-fill
-  border-radius 2px
+  width 50px
+  height 30px
+  border-radius 15px
+  background #ffffff
+  border none 
+  outline none
+  &:active
+    background #595959
+    &:after,
+    &:before
+      background #ffffff !important 
   &:after
     content ""
     position absolute
-    width 24px
+    width 12px
     height 2px
+    background #595959
     top 50%
     left 50%
-    background stepper-color
     transform translate(-50%, -50%)
   &.md-stepper-button-add
     &:before
       content ""
       position absolute
       width 2px
-      height 24px
+      height 12px
       top 50%
       left 50%
-      background stepper-color
+      background #595959
       transform translate(-50%, -50%)
-  &.disabled
-    &:before,
-    &:after
-      opacity stepper-disabled-opacity
+&.disabled
+  .outline
+    border-color #c9c9c9
+  &:before,
+  &:after
+    background #c9c9c9
+.outline
+  position absolute
+  top 0
+  left 0
+  right 0
+  bottom 0
+  width 200%
+  height 200%
+  border 1px solid #595959
+  border-radius 30px
+  transform scale(0.5) translate(-50%, -50%)
+  pointer-events none
+  box-sizing border-box
+  transform-origin 50% 50%
 
 .md-stepper-number
   margin 0 4px
-  min-width stepper-width-input
-  height stepper-height
   padding 0 4px
   text-align center
-  border-radius stepper-radius-button
-  background-color stepper-fill
   input
     width 100%
-    height stepper-height
     border none
     outline none
-    font-size stepper-input-font-size
-    line-height stepper-height
+    font-size 16px
+    line-height 22px
+    padding 13px 0
     background-color transparent
     box-sizing border-box
     text-align center
-    color stepper-color
-    border-radius stepper-radius-input
+    color #333
 </style>

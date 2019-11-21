@@ -2,35 +2,36 @@
   <div
     class="md-field-item"
     :class="{
-      'is-solid': solid,
       'is-disabled': currentDisabled,
       'is-align-right': alignRight
     }"
     @click="$_onClick"
   >
+      
     <div class="md-field-item-content">
-      <label class="md-field-item-title" v-if="title" v-text="title"></label>
-      <div class="md-field-item-left" v-if="$slots.left">
+      <label class="md-field-item-label" v-if="label" v-text="label" :style="{'margin-right': ($slots.left ? '5px': '10px')}"></label>
+      <span class="md-field-item-left" v-if="$slots.left" :class="{'left-content':label}">
         <slot name="left"></slot>
-      </div>
+      </span>
       <div class="md-field-item-control">
         <slot>
           <template v-if="content">{{ content }}</template>
           <div class="md-field-item-placeholder" v-else-if="placeholder" v-text="placeholder"></div>
         </slot>
       </div>
-      <div class="md-field-item-right" v-if="arrow || addon || $slots.right">
+      <div class="md-field-item-right" v-if="imgSrc || addon || $slots.right">
         <slot name="right">{{ addon }}</slot>
-        <md-icon v-if="arrow" :name="arrow === true ? 'arrow-right' : arrow" size="md" />
+        <img v-show="imgSrc" class="ren_icon" :src="imgSrc"/>
       </div>
     </div>
     <div class="md-field-item-children" v-if="$slots.children">
-      <slot name="children"></slot>
+        <slot name="children"></slot>
     </div>
   </div>
 </template>
 
-<script>import Icon from '../icon'
+<script>
+import Icon from '../icon'
 
 export default {
   name: 'md-field-item',
@@ -50,7 +51,7 @@ export default {
   },
 
   props: {
-    title: {
+    label: {
       type: String,
       default: '',
     },
@@ -62,17 +63,13 @@ export default {
       type: String,
       default: '',
     },
-    addon: {
+    imgSrc: {
       type: String,
       default: '',
     },
-    arrow: {
-      type: [Boolean, String],
-      default: false,
-    },
-    solid: {
-      type: Boolean,
-      default: false,
+    addon: {
+      type:  String,
+      default: '',
     },
     alignRight: {
       type: Boolean,
@@ -98,76 +95,74 @@ export default {
     },
   },
 }
-</script>
+
+</script>
 
 <style lang="stylus">
+
 .md-field-item
   position relative
-
 .md-field-item-content
   position relative
+  padding 0 17px
   display flex
   align-items center
   justify-content space-between
   min-height field-item-min-height
-  padding-top field-item-padding-v
-  padding-bottom field-item-padding-v
   box-sizing border-box
-  hairline(bottom, field-item-border-color)
-
-.md-field-item-title
-  flex-shrink 0
-  margin-right field-item-title-gap
-  font-size field-item-font-size
-  line-height 1.2
-
-.md-field-item-left
-  flex-shrink 0
-  margin-right h-gap-sm
-  display inline-flex
-  align-items center
-  justify-content flex-start
-  color field-item-addon-color
-  font-size field-item-addon-font-size
-
+.left-content
+  margin-right 12px
+.md-field-item-label
+  min-width 64px
+  font-size 16px
+  color #333333
+  line-height 22px
+  max-width: 112px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 .md-field-item-control
-  position relative
-  flex 1 1 0%
-  color field-item-color
-  font-size field-item-font-size
-  font-weight field-item-font-weight
+  position relative 
+  flex 1
   line-height 1.2
-
-.md-field-item-placeholder
-  color field-item-placeholder-color
-  font-weight font-weight-normal
 
 .md-field-item-right
   position relative
-  flex-shrink 0
-  margin-left h-gap-sm
-  display inline-flex
+  display flex
   align-items center
-  justify-content flex-end
-  color field-item-addon-color
-  font-size field-item-addon-font-size
-  .md-icon-arrow-right
-    margin-right -6px
-    color color-text-placeholder
+  justify-content center
+  margin-left 5px
+  .ren_icon
+    width 22px
+    height 22px
 
 .md-field-item-children
-  font-size field-item-children-font-size
-  margin-top v-gap-md
+  font-size 13px
+  color #898989
+  padding 12px 17px 6px 0px
+  line-height 16px
+  margin-left 17px
+  position relative
+  &::before
+    content ''
+    width 200%
+    position absolute
+    left 0
+    right 0
+    top 0
+    -webkit-transform scale(0.5)
+    transform scale(0.5)
+    -webkit-transform-origin 0 0
+    transform-origin 0 0
+    height 1px
+    background-color #EAEAEA
 
 .md-field-item
-  &.is-solid
-    .md-field-item-title
-      width field-item-title-width
   &.is-disabled
     .md-field-item-control,
     .md-field-item-left,
     .md-field-item-right
-      color color-text-disabled
+      color #898989
   &.is-align-right
     .md-field-item-control
       text-align right
