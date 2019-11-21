@@ -46,7 +46,7 @@
         v-show="!isInputEmpty"
         @click="$_clearInput"
       >
-        <md-icon name="clear"></md-icon>
+        <md-icon name="clear" size="xxs"></md-icon>
       </div>
     </template>
 
@@ -395,6 +395,30 @@ export default {
     $_onBlur() {
         this.$emit('blur', this.name)
     },
+    $_onFakeInputClick(event) {
+      if (this.isDisabled || this.readonly) {
+        return
+      }
+
+      this.$_blurFakeInput()
+
+      if (!this.isInputFocus) {
+        this.$_focusFakeInput(event)
+      }
+    },
+    $_onNumberKeyBoardEnter(val) {
+      this.inputValue = this.$_formateValue(this.inputValue + val).value
+    },
+    $_onNumberKeyBoardDelete() {
+      const inputValue = this.inputValue
+      if (inputValue === '') {
+        return
+      }
+      this.inputValue = this.$_formateValue(inputValue.substring(0, inputValue.length - 1)).value
+    },
+    $_onNumberKeyBoardConfirm() {
+      this.$emit('confirm', this.name, this.inputValue)
+    },
 
     // MARK: public methods
     focus() {
@@ -413,6 +437,10 @@ export default {
 </script>
 
 <style lang="stylus">
+@require "./../_style/mixin/util.styl"
+@require "./../_style/mixin/theme.components.styl"
+@require "./../_style/mixin/theme.basic.styl"
+@require "./../../theme.custom.styl"
 .content-wraper
   background #ffffff
   .unit-money
@@ -432,7 +460,7 @@ export default {
       right 0px
       border-bottom 1px solid #eaeaea
       transform scaleY(.5)
-      transform-origin 0 0  
+      transform-origin 0 0 
 .md-input-item
   .md-field-item-title
     width 25%

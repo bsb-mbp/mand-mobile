@@ -7,6 +7,8 @@
       prevent-scroll
       @show="$_onShow"
       @hide="$_onHide"
+      :native-title-height="nativeTitleHeight"
+      no-native-patch
     >
       <div class="md-action-sheet-content">
         <header v-if="title" class="md-action-sheet-header">{{title}}</header>
@@ -40,6 +42,7 @@
 <script>
 import Popup from '../popup';
 import {inArray} from '../_util';
+import fullScreenPatchUtil from '@business/fullscreen-patch-util';
 
 export default {
   name: 'md-action-sheet',
@@ -73,20 +76,26 @@ export default {
       type: String,
       default: '取消'
     },
-    isIphoneX: {
-      type: Boolean,
-      default: false
-    },
     type: {
       type: String,
       default: 'normal'
+    },
+    nativeTitleHeight: {
+      type: Number,
+      default: 44
+    },
+    noBottomFixed: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
+    const isIphoneX = fullScreenPatchUtil.getStatusBarHeight() === 44 && !this.noBottomFixed;
     return {
       isActionSheetShow: this.value,
       clickIndex: -1,
-      scroller: ''
+      scroller: '',
+      isIphoneX
     };
   },
   watch: {
@@ -128,7 +137,7 @@ export default {
 
 <style lang="stylus" scoped>
 .global-is-iphone-x
-  margin-bottom 24px
+  margin-bottom 34px
 .warning
   color #F12701
 .md-action-sheet

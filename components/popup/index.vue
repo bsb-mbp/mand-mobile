@@ -95,6 +95,10 @@ export default {
     lighterMask: {
       type: Boolean,
       default: false
+    },
+    noNativePatch: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -158,9 +162,15 @@ export default {
 
       this.preventScroll && this.$_preventScroll(true)
 
-      if (window.plus && this.hasMask) {
+      if (window.plus && this.hasMask && !this.noNativePatch) {
+        if (this.nativeTitleHeight === 0) {
+          const fubarWrapper = document.querySelector('.bob-wrapper');
+          fubarWrapper && (fubarWrapper.style['overflow-y'] = 'visible');
+        }
+
         const maskStyle = {backgroundColor: '#000000', opacity: this.lighterMask ? 0.3 : 0.8};
-        this.nativeViewPatches = fullScreenPatchUtil.createNativeViewPatches(maskStyle, this.nativeTitleHeight);
+        this.nativeViewPatches =
+          fullScreenPatchUtil.createNativeViewPatches(maskStyle, this.nativeTitleHeight);
         this.nativeViewPatches.forEach(patch => {
           patch.show();
         });
@@ -181,7 +191,11 @@ export default {
         this.$_onPopupTransitionEnd()
       }
 
-      if (window.plus && this.hasMask) {
+      if (window.plus && this.hasMask && !this.noNativePatch) {
+        if (this.nativeTitleHeight === 0) {
+          const fubarWrapper = document.querySelector('.bob-wrapper');
+          fubarWrapper && (fubarWrapper.style['overflow-y'] = 'auto');
+        }
         fullScreenPatchUtil.destoryNativeViewPatches(this.nativeViewPatches);
       }
     },
