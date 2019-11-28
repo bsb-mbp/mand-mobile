@@ -22,7 +22,7 @@
             :step="step"
           />
           <template v-else>
-            <div class="name">
+            <div class="name" :style="{'max-width': direction === 'horizontal' ? 340 / steps.length + 'px' : 'auto'}">
               {{ step.timeFlag || '--' }}
             </div>
             <div

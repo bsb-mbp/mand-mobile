@@ -178,9 +178,19 @@ export default {
         window.addEventListener(pageHideEventName, () => {
           fullScreenPatchUtil.destoryNativeViewPatches(this.nativeViewPatches);
         });
+        window.plus.webview.currentWebview().addEventListener('close', () => {
+          fullScreenPatchUtil.destoryNativeViewPatches(this.nativeViewPatches);
+        });
       }
     },
     $_hidePopupBox() {
+      if (window.plus && this.hasMask && !this.noNativePatch) {
+        if (this.nativeTitleHeight === 0) {
+          const fubarWrapper = document.querySelector('.bob-wrapper');
+          fubarWrapper && (fubarWrapper.style['overflow-y'] = 'auto');
+        }
+        fullScreenPatchUtil.destoryNativeViewPatches(this.nativeViewPatches);
+      }
       this.isAnimation = true
       this.isPopupBoxShow = false
       this.preventScroll && this.$_preventScroll(false)
@@ -189,14 +199,6 @@ export default {
       if (process.env.NODE_ENV === 'test') {
         this.$_onPopupTransitionStart()
         this.$_onPopupTransitionEnd()
-      }
-
-      if (window.plus && this.hasMask && !this.noNativePatch) {
-        if (this.nativeTitleHeight === 0) {
-          const fubarWrapper = document.querySelector('.bob-wrapper');
-          fubarWrapper && (fubarWrapper.style['overflow-y'] = 'auto');
-        }
-        fullScreenPatchUtil.destoryNativeViewPatches(this.nativeViewPatches);
       }
     },
     $_preventScroll(isBind) {
