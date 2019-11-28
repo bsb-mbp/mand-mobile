@@ -43,7 +43,8 @@
   </div>
 </template>
 
-<script>import Popup from '../popup'
+<script>
+import Popup from '../popup'
 import Keyborad from './board'
 
 export default {
@@ -124,9 +125,14 @@ export default {
     },
   },
 }
-</script>
+
+</script>
 
 <style lang="stylus">
+@require "./../_style/mixin/util.styl"
+@require "./../_style/mixin/theme.components.styl"
+@require "./../_style/mixin/theme.basic.styl"
+@require "./../../theme.custom.styl"
 .md-number-keyboard
   .md-popup
     z-index number-keyboard-zindex

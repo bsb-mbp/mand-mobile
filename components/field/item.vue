@@ -99,7 +99,10 @@ export default {
 </script>
 
 <style lang="stylus">
-
+@require "./../_style/mixin/util.styl"
+@require "./../_style/mixin/theme.components.styl"
+@require "./../_style/mixin/theme.basic.styl"
+@require "./../../theme.custom.styl"
 .md-field-item
   position relative
 .md-field-item-content

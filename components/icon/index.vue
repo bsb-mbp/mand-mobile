@@ -84,7 +84,7 @@ export default {
       speak none
       -webkit-font-smoothing antialiased
       -moz-osx-font-smoothing grayscale
-      &.xss
+      &.xxs
         font-size icon-size-xxs
       &.xs
         font-size icon-size-xs
@@ -99,7 +99,7 @@ export default {
         z-index 2
 
     &.icon-svg
-      &.xss
+      &.xxs
         width icon-size-xxs
         vertical-height(icon-size-xxs)
       &.xs
