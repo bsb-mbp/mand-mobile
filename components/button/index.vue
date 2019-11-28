@@ -127,22 +127,23 @@ export default {
     padding 0 6px
   // type
   &.default
+    font-weight normal
     background button-default-fill
     color button-default-color
-    hairline(all, color-border-element, button-radius, 3px)
-    &.active:active
+    hairline(all, #898989, button-radius, 2px)
+    &.active:active:not(:disabled)
       background button-default-active-fill
   &.primary
     background button-primary-fill
     color button-primary-color
     hairline(all, button-primary-fill, button-radius, 3px)
-    &.active:active
+    &.active:active:not(:disabled)
       background button-primary-active-fill
   &.primary-flat
     background color-primary
     color button-primary-color
     hairline(all, button-primary-fill, button-radius, 3px)
-    &.active:active
+    &.active:active:not(:disabled)
       background button-primary-active-fill
     &:disabled
       background #c9c9c9
@@ -150,7 +151,7 @@ export default {
     background button-warning-fill
     color button-warning-color
     hairline(all, button-warning-fill, button-radius, 3px)
-    &.active:active
+    &.active:active:not(:disabled)
       background button-warning-active-fill
   &.disabled
     background button-disabled-fill
@@ -163,17 +164,17 @@ export default {
     &.default
       color button-default-plain-color
       hairline(all, color-border-element, button-radius, 3px)
-      &.active:active
+      &.active:active:not(:disabled)
         background button-default-plain-active-fill
     &.primary
       color button-primary-plain-color
       hairline(all, button-primary-fill, button-radius, 3px)
-      &.active:active
+      &.active:active:not(:disabled)
         background button-primary-plain-active-fill
     &.warning
       color button-warning-plain-color
       hairline(all, button-warning-fill, button-radius, 3px)
-      &.active:active
+      &.active:active:not(:disabled)
         background button-warning-plain-active-fill
     &.disabled
       color button-disabled-plain-color
@@ -182,7 +183,7 @@ export default {
   &.round
     border-radius button-height
     &:after
-      border-radius button-height !important
+      border-radius button-height
 
   &.inline
     display inline-block
@@ -217,6 +218,8 @@ export default {
     font-weight font-weight-normal
     color color-primary
     background transparent
+    &.active:active
+      background transparent
     &.inactive
       color color-text-disabled
       opacity 1

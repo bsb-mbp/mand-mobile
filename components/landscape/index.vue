@@ -163,9 +163,13 @@ export default {
           this.nativeViewPatches.forEach(patch => {
             patch.show();
           });
-          window.addEventListener('beforeunload', () => {
+          const pageHideEventName = window.plus && window.plus.os.name === 'iOS' ? 'pagehide' : 'beforeunload';
+          window.addEventListener(pageHideEventName, () => {
             fullScreenPatchUtil.destoryNativeViewPatches(this.nativeViewPatches);
-          }, false);
+          });
+          window.plus.webview.currentWebview().addEventListener('close', () => {
+            fullScreenPatchUtil.destoryNativeViewPatches(this.nativeViewPatches);
+          });
         }
         else {
           if (this.nativeTitleHeight === 0) {
