@@ -16,9 +16,9 @@
         @keydown="$_onKeydown"
       ></textarea>
       <span
-            class="md-input-item-fake-placeholder "
-            v-if="inputValue === '' && placeholder !== ''"
-            v-text="placeholder"></span>
+        class="md-input-item-fake-placeholder "
+        v-if="inputValue === '' && placeholder !== ''"
+        v-text="placeholder"></span>
     </div>
     <slot name="footer"></slot>
     <div

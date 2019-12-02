@@ -117,8 +117,7 @@ export default {
       if (!this.value) {
         return 12
       }
-      const length = this.value.toString().length
-      return length > 12 ? length : 12
+      return this.value ? Math.max(this.value.toString().length, 12) : 12;
     },
   },
 
@@ -210,7 +209,7 @@ export default {
       this.currentNum = formatted
     },
     $_onChange() {
-      this.currentNum = this.$_getCurrentNum(this.currentNum) 
+      this.currentNum = this.$_getCurrentNum(this.currentNum)
     },
   },
 }
@@ -250,7 +249,7 @@ export default {
     background #595959
     &:after,
     &:before
-      background #ffffff !important 
+      background #fff !important 
   &:after
     content ""
     position absolute
