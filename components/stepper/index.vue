@@ -10,8 +10,9 @@
       :class="{'disabled': isMin}"
       @click="$_reduce"
       :disabled="isMin"
-      @touchstart=""          <!--  hack for iOS, implementation of :active class -->
+      @touchstart="" 
     >
+    <!-- @touchstart="" hack for iOS, implementation of :active class -->
       <div class="outline"></div>
     </button>
     <div class="md-stepper-number">
@@ -27,8 +28,9 @@
       :disabled="isMax"
       :class="{'disabled': isMax}"
       @click="$_add"
-      @touchstart=""  <!--  hack for iOS, implementation of :active class -->
+      @touchstart=""     
     >
+     <!-- @touchstart="" hack for iOS, implementation of :active class -->
       <div class="outline"></div>
     </button>
   </div>
