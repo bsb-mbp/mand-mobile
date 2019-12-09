@@ -7,7 +7,7 @@
         ref="textarea"
         v-model="inputValue"
         :readonly="readonly"
-        :maxlength="maxLength"
+        :maxlength="maxlength"
         :rows="rows"
         @input="$_onInput"
         @focus="$_onFocus"
@@ -31,7 +31,8 @@
     </div>
   </div>
 </template>
-<script>import FieldItem from '../field-item'
+<script>
+import FieldItem from '../field-item'
 import Icon from '../icon'
 export default {
   name: 'md-textarea-item',
@@ -52,13 +53,13 @@ export default {
       type: String,
       default: '',
     },
-    maxLength: {
+    maxlength: {
       type: [String, Number],
       default: '',
     },
     maxHeight: {
       type: [String, Number],
-      default: '58',
+      default: '66',
     },
     readonly: {
       type: Boolean,
@@ -176,20 +177,39 @@ export default {
 .textarea-wrapper
     display flex
     justify-content space-between
-    padding 14px 17px
+    padding 13px 17px
     background #fff
-    margin 30px 0
     .md-input-item-fake
+      width 100%
+      position relative
       display flex
       align-items center
       .md-input-item-fake-placeholder
+        display inline-block
+        line-height 22px
         padding-top 0
         top 0
+        font-size 16px
+        position absolute
+        left 0
+        top 0
+        width 100%
+        color #C9C9C9
+        white-space nowrap
+        overflow hidden
+        text-overflow ellipsis
     .md-field-item-label
-      line-height normal
+      min-width 64px
+      font-size 16px
+      color #333333
+      max-width 112px
+      margin-right 12px
+      white-space nowrap
+      overflow hidden
+      text-overflow ellipsis
     .md-textarea-item
         font-size 16px
-        line-height 19px 
+        line-height 22px
         color #3086F5 /* 光标的颜色*/ 
         text-shadow 0px 0px 0px #333 /* 文本颜色 */
         -webkit-text-fill-color transparent 
