@@ -188,7 +188,6 @@ export default {
         display inline-block
         line-height 22px
         padding-top 0
-        top 0
         font-size 16px
         position absolute
         left 0
