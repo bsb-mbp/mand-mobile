@@ -20,7 +20,6 @@
         v-if="inputValue === '' && placeholder !== ''"
         v-text="placeholder"></span>
     </div>
-    <slot name="footer"></slot>
     <div
       class="md-textarea-item__clear"
       v-if="clearable && !readonly"
@@ -32,12 +31,10 @@
   </div>
 </template>
 <script>
-import FieldItem from '../field-item'
 import Icon from '../icon'
 export default {
-  name: 'md-textarea-item',
+  name: 'textarea',
   components: {
-    [FieldItem.name]: FieldItem,
     [Icon.name]: Icon,
   },
   props: {

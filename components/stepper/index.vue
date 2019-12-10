@@ -8,18 +8,21 @@
     <button
       class="md-stepper-button md-stepper-button-reduce"
       :class="{'disabled': isMin}"
+	  :disabled="isMin"
       @click="$_reduce"
-      :disabled="isMin"
       @touchstart="" 
     >
     <!-- @touchstart="" hack for iOS, implementation of :active class -->
       <div class="outline"></div>
     </button>
     <div class="md-stepper-number">
-      <input type="tel"
+      <input 
+		class="md-stepper-input"
+		type="tel"
         :maxlength ="contentLength"
         :value="currentNum"
         :readOnly="readOnly"
+		:step="step"
         @input="$_onInput"
         @blur="$_onChange">
     </div>
@@ -212,6 +215,7 @@ export default {
     },
     $_onChange() {
       this.currentNum = this.$_getCurrentNum(this.currentNum)
+	  this.$emit('blur', this.currentNum)
     },
   },
 }
@@ -293,8 +297,9 @@ export default {
   transform-origin 50% 50%
 .md-stepper-number
   text-align center
-  input
+  .md-stepper-input
     width 130px
+	height 48px
     border none
     outline none
     font-size 16px
