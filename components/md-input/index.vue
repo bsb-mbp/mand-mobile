@@ -1,33 +1,34 @@
 <template>
-  <fieldset class="md-field" style="background:#fff">
+  <fieldset class="md-field">
     <header v-if="title || $slots.header || $slots.action || info || edit" class="md-field-header">
       <div class="md-field-heading">
         <legend v-if="title" class="md-field-title" v-text="title" />
         <slot name="header" />
       </div>
       <div class="md-field-action" @click="$_handleaction">
-        <div v-if="info" class="md-field-action-info">{{info}}<md-icon name="infoBlue" /></div>
+        <div v-if="info" class="md-field-action-info">{{info}}<md-icon name="info" /></div>
         <div v-else-if="edit" class="md-field-action-edit">{{postScript}}<md-icon name="edit" /></div>
         <slot v-else name="action" />
       </div>
     </header>
     <div :class="{'line-bottom':isLine}">
-      <div v-if="size=='large'" style="height:24px">
-        <i v-show="unit" class="unit-money">{{unit}}</i>
+      <div v-if="size==='large'" class="unit">
+        <i v-show="unit" class="unit-money"> {{unit}} </i>
       </div>
-      <div class="md-input-item md-field-item-content" :class="[size,align,inputEnv]">
+      <div class="md-input-item md-field-item-content" :class="[size,align]">
         <div v-if="label || $slots.left || icon" class="md-field-item-left">
           <label v-if="label" class="md-field-item-label" :class="{'is-icon':icon}" v-text="label" />
-          <md-icon v-if="icon" name="info" size="xs" @click="handleinfo" />
+          <md-icon v-if="icon" name="info" size="xs" color="#c9c9c9" @click="handleinfo" />
           <slot name="left" />
         </div>
-        <div class="md-field-item-control">
+        <div class="md-field-item-control" :class="[inputEnv]">
           <div v-if="isRmb" class="rmb">￥</div>
-          <div class="md-input-item-fake">
             <input
+              ref="input-item"
               v-model="inputBindValue"
               class="md-input-item-input"
               :type="inputType"
+              :placeholder="placeholder"
               :name="name"
               :disabled="disabled"
               :readonly="readonly"
@@ -40,12 +41,6 @@
               @keypress="$_onKeypress"
               @input="$_onInput"
             >
-              <span
-                v-if="inputValue === '' && placeholder !== ''"
-                class="md-input-item-fake-placeholder"
-                v-text="placeholder"
-              />
-          </div>
           <div
             v-if="clearable && !disabled"
             v-show="!isInputEmpty"
@@ -81,7 +76,7 @@ import {noop, isIOS, isAndroid, randomId} from '../_util';
 import {formatValueByGapRule, formatValueByGapStep, trimValue} from '../_util/formate-value';
 
 export default {
-  name: 'MdInputItem',
+  name: 'inputItem',
   components: {
     [Icon.name]: Icon
   },
@@ -155,7 +150,7 @@ export default {
     align: {
       // left, center, right
       type: String,
-      default: 'left'
+      default: 'right'
     },
     error: {
       type: String,
@@ -241,23 +236,19 @@ export default {
       return this.size !== 'large' && !this.noLine;
     },
     unit: function () {
-      try {
-        var _REG = '千百十亿千百十万千百十元';
-        var num = Number(this.inputValue);
-        num = parseInt(num, 0);
-        var temp = '';
-        for (var i = 0; i < num.toString().length; i++) {
-          temp += '' + _REG.split('').reverse().join('').charAt(i);
-        }
-        return temp.split('').reverse().join('').replace(/千百十亿千百十万千百十元$/,
-          '千亿').replace(/百十亿千百十万千百十元$/, '百亿').replace(/十亿千百十万千百十元$/,
-          '十亿').replace(/亿千百十万千百十元$/, '亿').replace(/千百十万千百十元$/,
-          '千万').replace(/百十万千百十元$/, '百万').replace(/十万千百十元$/,
-          '十万').replace(/万千百十元$/, '万').replace(/千百十元|百十元|十元|元$/, '');
-      }
-      catch (e) {
+      let arr = ['万', '十万', '百万', '千万', '亿', '十亿', '百亿', '千亿'];
+      let num = parseInt(this.inputValue, 0);
+      var len = num.toString().length;
+      if (len < 5) {
         return '';
       }
+      else if (len >= 5 && len <= 12) {
+        len = len - 5;
+      }
+      else {
+        len = 7;
+      }
+      return arr[len];
     }
   },
   watch: {
@@ -287,18 +278,17 @@ export default {
   },
   created() {
     this.inputValue = this.$_formateValue(this.$_subValue(this.value + '')).value;
-  },
-  mounted() {
+    console.log(this.inputValue);
   },
   methods: {
     $_handleaction() {
-      this.$emit('handleaction');
+      this.$emit('handle-action');
     },
     handleinfo() {
-      this.$emit('handleinfo');
+      this.$emit('handle-info');
     },
     handleright() {
-      this.$emit('handleright');
+      this.$emit('handle-right');
     },
     formation(event) {
       if (this.myReg.test(event.currentTarget.value)) {
@@ -374,6 +364,7 @@ export default {
     },
     $_clearInput() {
       this.inputValue = '';
+      this.$emit('clear');
       this.focus();
     },
     // MARK: events handler
@@ -430,58 +421,46 @@ export default {
 <style lang="stylus">
 .md-field
   border none
+  background #fff
   .left
-    .md-input-item-input,
-    .md-input-item-fake
+    .md-input-item-input
       text-align left
 
   .center
-    .md-input-item-input,
-    .md-input-item-fake
+    .md-input-item-input
       text-align center
 
   .right
-    .md-input-item-input,
-    .md-input-item-fake
+    .md-input-item-input
       text-align right
-
-  .large
-    .md-field-item-control
-      margin-bottom 15px
-      height 34px
-      .md-input-item-clear
-        .md-icon.icon-svg.md
-          width 22px
-          height 22px
-      .md-input-item-input
-        font-size 34px
-        padding 0
-        &::-webkit-input-placeholder
-          font-size 20px
-      .md-input-item-fake-placeholder
-        font-size 20px
-        padding-top 15px
-
-  .unit-money
-    font-style normal
-    font-size 12px
-    color #B9B8B8
-    margin-left 56px
-    border-left 1px solid #B9B8B8
-    padding 6px 2px 4px
-
-  .line-bottom
-      position relative
-      &::after
-        content ""
-        position absolute
-        bottom 0px
-        left 17px
-        right 0px
-        border-bottom 1px solid #eaeaea
-        transform scaleY(.5)
-        transform-origin 0 0
-
+  .md-input-item-input
+    width 100%
+    position relative
+    box-sizing border-box
+    position relative
+    z-index 2
+    line-height normal
+    background-color transparent !important
+    width 100%
+    height 48px
+    line-height 22px
+    font-size 16px
+    padding 15px 0 !important
+    margin-bottom 0
+    border-radius 3px
+    color #3086F5 !important
+    text-shadow 0px 0px 0px #333
+    -webkit-text-fill-color transparent
+    border none
+    outline none
+    appearance none
+    &::-webkit-input-placeholder
+      color #C9C9C9
+      text-shadow none
+      -webkit-text-fill-color initial
+      white-space nowrap
+      overflow hidden
+      text-overflow ellipsis
   .md-field-header
     position relative
     overflow hidden
@@ -519,6 +498,56 @@ export default {
           height 24px
           line-height normal
           margin-left 12px
+  .large
+    .is-android
+      .md-input-item-input
+        &::-webkit-input-placeholder
+          position relative
+          bottom 2px
+    .is-ios
+      .rmb
+        padding-top 1px
+      .md-input-item-input
+          &::-webkit-input-placeholder
+            position relative
+            top 13px
+    .md-field-item-control
+      margin-bottom 15px
+      height 34px
+      .md-input-item-clear
+        .md-icon.icon-svg.md
+          width 22px
+          height 22px
+      .md-input-item-input
+        font-size 34px
+        padding 0
+        &::-webkit-input-placeholder
+          font-size 20px
+        &:disabled, &[disabled]
+          text-shadow 0px 0px 0px #898989
+        &::-webkit-outer-spin-button, &::-webkit-inner-spin-button
+          appearance none
+.unit
+  height 24px
+  .unit-money
+    font-style normal
+    font-size 12px
+    color #B9B8B8
+    margin-left 56px
+    border-left 1px solid #B9B8B8
+    padding 6px 2px 4px
+
+.line-bottom
+  position relative
+  &::after
+    content ""
+    position absolute
+    bottom 0px
+    left 17px
+    right 0px
+    border-bottom 1px solid #eaeaea
+    transform scaleY(.5)
+    transform-origin 0 0
 
 .md-input-item-clear
   color #999
@@ -529,17 +558,6 @@ export default {
     height 20px
     width 20px
 
-.md-input-item-fake
-  .md-input-item-input
-    &:disabled, &[disabled]
-      text-shadow 0px 0px 0px #898989
-    &::-webkit-input-placeholder
-      color #C9C9C9
-      text-shadow none
-      -webkit-text-fill-color initial
-    &::-webkit-outer-spin-button, &::-webkit-inner-spin-button
-      appearance none
-
 .md-input-item-msg
   background #eaeaea
   padding: 5px 17px 17px 17px
@@ -547,48 +565,9 @@ export default {
     color #F43F3F
     font-size 12px
     line-height 18px
-
-  .is-readonly
-    .md-input-item-fake
-      .md-input-item-input
-        text-shadow 0px 0px 0px #898989
-
-  &.is-ios
-    .rmb
-      padding-top 1px
-.md-input-item-fake
-  width 100%
-  position relative
+.is-readonly
   .md-input-item-input
-    box-sizing border-box
-    position relative
-    z-index 2
-    line-height normal
-    background-color transparent !important
-    width 100%
-    height 48px
-    line-height 22px
-    font-size 16px
-    padding 15px 0 !important
-    margin-bottom 0
-    border-radius 3px
-    color #3086F5 !important
-    text-shadow 0px 0px 0px #333
-    -webkit-text-fill-color transparent
-    border none
-    outline none
-    appearance none
-  .md-input-item-fake-placeholder
-    font-size 16px
-    position absolute
-    padding-top 15px
-    left 0
-    top 0
-    width 100%
-    color #C9C9C9
-    white-space nowrap
-    overflow hidden
-    text-overflow ellipsis
+    text-shadow 0px 0px 0px #898989
 
 .md-field-item-content
     position relative
@@ -617,7 +596,6 @@ export default {
         font-size 16px
         color #333333
         max-width 112px
-        line-height 22px
         white-space nowrap
         overflow hidden
         text-overflow ellipsis
@@ -655,7 +633,8 @@ export default {
       transform-origin 0 0
       height 1px
       background-color #E5E5E5
-
+    .md-input-item-brief
+      min-height 20px
 .md-field-item-control,
 .md-field-item-left,
 .md-field-item-right

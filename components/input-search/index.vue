@@ -1,16 +1,13 @@
 <template>
-<div class="search-wrapper" :class="align">
-  <md-field-item
-    class="md-input-item"
+<div :class="[align,align =='center'? 'search-wrapper' : '']">
+  <div
+    class="md-field-item"
     :class="[
-      isInputActive ? 'is-active' : '',
-      isInputFocus ? 'is-focus' : '',
-      isDisabled ? 'is-disabled': '',
       inputEnv
     ]"
   >
-    <md-icon name="search" id="search-icon" size="xs" style="position:absolute;left:5px"/>
-    <template>
+    <md-icon v-show="isShow" name="search" size="xs" style="position:absolute;left:5px" />
+    <div class="md-field-item-content">
       <input
         v-model="inputValue"
         class="md-input-item-input"
@@ -27,32 +24,33 @@
         @input="$_onInput"
       >
       <span
-        v-if="align=='center'"
+        v-if="align==='center'"
         class="search-center"
+        :class="{'d-none':isShow}"
       >
-        <md-icon name="search" size="xs" style="padding-right:3px"/><span class="shake">{{placeholder}}</span>
+        <md-icon name="search" size="xs" /><span class="shake">{{placeholder}}</span>
       </span>
       <div
-        v-show="!isInputEmpty && isInputFocus"
         class="md-input-item-clear"
+        :class="{vs:!isInputEmpty && isInputFocus}"
         @click="$_clearInput"
       >
-        <md-icon name="clear" size="xs"/>
+        <md-icon name="clear" size="xs" />
       </div>
-    </template>
+    </div>
 
-    <template slot="right">
-      <span v-show="cancelText" class="cancelSearch" @click="$_cancel" v-text="cancelText" />
+    <div>
+      <span v-if="cancelText" class="cancelSearch" @click="$_cancel" v-text="cancelText" />
       <slot name="right" />
-    </template>
-  </md-field-item>
+    </div>
+  </div>
 </div>
 </template>
 
 <script>
 import Icon from '../icon';
 import Field from '../field';
-import {noop, isIOS, isAndroid, randomId} from '../_util'
+import {isIOS, isAndroid} from '../_util';
 import FieldItem from '../field-item';
 
 export default {
@@ -71,6 +69,10 @@ export default {
   },
 
   props: {
+    value: {
+      type: String,
+      default: ''
+    },
     cancelText: {
       type: String,
       default: ''
@@ -100,8 +102,9 @@ export default {
 
   data() {
     return {
+      isShow: true,
       inputValue: '',
-      isInputFocus: false,
+      isInputFocus: false
     };
   },
 
@@ -109,19 +112,18 @@ export default {
     inputEnv() {
       /* istanbul ignore next */
       if (isIOS) {
-        return 'is-ios'
-      } else if (isAndroid) {
-        return 'is-android'
-      } else {
-        return 'is-browser'
+        return 'is-ios';
       }
+      else if (isAndroid) {
+        return 'is-android';
+      }
+      return 'is-browser';
     },
     inputMaxLength() {
       if (this.type === 'phone') {
         return 11;
       }
       return this.maxlength;
-
     },
     inputPlaceholder() {
       return this.align === 'center' ? '' : this.placeholder;
@@ -138,6 +140,9 @@ export default {
   },
 
   watch: {
+    value(val) {
+      this.inputValue = val;
+    },
     inputValue(val) {
       this.$emit('input', val);
     },
@@ -150,13 +155,10 @@ export default {
       }
     }
   },
-  created() {
-  },
   mounted() {
     if (this.align === 'center') {
-      document.querySelector('.md-field-item-control').style.background = '#fff';
+      this.isShow = false;
     }
-    document.querySelector("#search-icon").style.display = "none";
   },
 
   methods: {
@@ -172,36 +174,34 @@ export default {
 
     },
     $_clearInput() {
-      this.inputValue = ''; 
+      this.inputValue = '';
       this.focus();
     },
 
     // MARK: events handler
     $_onInput(event) {
-      this.$emit('change', this.name, event);
+      this.$emit('change', event);
     },
     $_onKeyup(event) {
       this.$emit('keyup', this.name, event);
       if (+event.keyCode === 13 || +event.keyCode === 108) {
-        this.$emit('confirm', this.name, this.inputValue);
+        this.$emit('confirm', this.inputValue);
       }
     },
     $_onKeydown(event) {
-      this.$emit('keydown', this.name, event);
+      this.$emit('keydown', event);
     },
     $_onFocus() {
       this.isInputFocus = true;
-      if(this.align == 'center'){
-        this.$el.querySelector(".search-center").style.display="none";
-        this.$el.querySelector("#search-icon").style.display="block";
+      if (this.align === 'center') {
+        this.isShow = true;
       }
-      
+
       this.$emit('focus', this.name);
     },
     $_onBlur() {
-      if(this.align == 'center'&& this.isInputEmpty){
-        this.$el.querySelector(".search-center").style.display="flex";
-        this.$el.querySelector("#search-icon").style.display="none";
+      if (this.align === 'center' && this.isInputEmpty) {
+        this.isShow = false;
       }
       setTimeout(() => {
         this.isInputFocus = false;
@@ -228,64 +228,71 @@ export default {
 
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
 .search-wrapper
-    .is-ios
-      .md-input-item-input::-webkit-input-placeholder
-        position relative
-        overflow visible
-        bottom 1px
-    .is-android
-      .shake
-        padding-top 2px
-      .md-input-item-input::-webkit-input-placeholder
-        position relative
-        overflow visible
-        top 1px
-    .md-field-item-control
-      background #eaeaea
-      border-radius 6px
-      overflow hidden
-    .search-center
-      position absolute
-      display flex
-      justify-content center
-      align-items center
-      font-size 16px
-      color #c9c9c9
-      left 0
-      right 0
-      top 0
-      bottom 0
-    .md-field-item-right
-        right 0
-    .md-input-item-input
-      height 34px
-      z-index 2
-      font-size 16px
-      padding 0 0
-      background-color transparent
-      width 100%
-      outline 0
-      border 0
-      appearance none
-      padding-left 30px   
-      color #3086F5 !important
-      text-shadow 0px 0px 0px #333
-      -webkit-text-fill-color transparent
-    .md-input-item-clear
-      margin-right 10px
-.cancelSearch
+    background #C7C6CB
+.is-ios
+  .md-input-item-input::-webkit-input-placeholder
+    position relative
+    overflow visible
+    bottom 1px
+.is-android
+  .shake
+    padding-top 2px
+  .md-input-item-input::-webkit-input-placeholder
+    position relative
+    overflow visible
+    top 1px
+.md-field-item
+  position relative
+  display flex
+  align-items center
+  justify-content space-between
+  .md-field-item-content
+    padding 0
+    position relative
+    flex 1
+    display flex
+    align-items center
+    justify-content space-between
+  .search-center
+    position absolute
+    display flex
+    justify-content center
+    align-items center
+    font-size 16px
+    color #c9c9c9
+    left 0
+    right 0
+    top 0
+    bottom 0
+    .md-icon.icon-svg.xs
+      padding-right 3px
+  .md-input-item-input
+    height 34px
+    z-index 2
+    font-size 16px
+    padding 0 0
+    background-color transparent
+    width 100%
+    outline 0
+    border 0 !important
+    appearance none !important
+    padding-left 30px !important
+    color #3086F5 !important
+    text-shadow 0px 0px 0px #333
+    -webkit-text-fill-color transparent
+  .md-input-item-clear
+    margin-right 10px
+    visibility hidden
+  .vs
+    visibility visible
+  .cancelSearch
     color #007AFF
     font-size 17px
     padding-left 30px
 input[type=search]::-webkit-search-cancel-button
   appearance none
-.md-input-item
-  .md-field-item-control
-    display flex
-    align-items center
-
 .md-input-item-input
   &::-webkit-input-placeholder
     text-shadow 0px 0px 0px #c9c9c9
@@ -293,38 +300,30 @@ input[type=search]::-webkit-search-cancel-button
   &::-webkit-outer-spin-button, &::-webkit-inner-spin-button
     appearance none
 
-.md-input-item
-  &.left
-    .md-input-item-input
-      text-align left
+.left
+  .md-input-item-input
+    text-align left
+    font-size 14px
+    height 30px
+  .md-icon.icon-svg.xs
+    width 16px
+    height 16px
+    line-height 16px
+  .md-field-item-content
+    border-radius 6px
+    background rgba(0, 0, 0, .1)
+.center
+  padding 12px 17px
+  .md-field-item
+    background #fff
+    border-radius 5px
+    position relative
+  #search-icon
+    display none
 
-  &.center
-    .md-input-item-input
-      text-align center
-
-  &.right
-    .md-input-item-input
-      text-align right
- .left
-   .md-icon.icon-svg.xs
-     width 16px
-     height 16px
-     line-height 16px
-   .md-input-item-input
-     font-size 14px
-     height 30px
-@-webkit-keyframes keyboard-cursor
-  0%
-    opacity 1
-  50%
-    opacity 0
-  to
-    opacity 1
-@keyframes keyboard-cursor
-  0%
-    opacity 1
-  50%
-    opacity 0
-  to
-    opacity 1
+.right
+  .md-input-item-input
+    text-align right
+.d-none
+  display none !important
 </style>
