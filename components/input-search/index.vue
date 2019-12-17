@@ -6,7 +6,7 @@
       inputEnv
     ]"
   >
-    <md-icon v-show="isShow" name="search" size="xs" style="position:absolute;left:5px" />
+    <md-icon v-show="isShow" name="search" size="xs" class="left-icon" />
     <div class="md-field-item-content">
       <input
         v-model="inputValue"
@@ -156,9 +156,10 @@ export default {
     }
   },
   mounted() {
-    if (this.align === 'center') {
+    if (this.align === 'center' && !this.value) {
       this.isShow = false;
     }
+    this.inputValue = this.value;
   },
 
   methods: {
@@ -326,4 +327,7 @@ input[type=search]::-webkit-search-cancel-button
     text-align right
 .d-none
   display none !important
+.left-icon
+  position absolute
+  left 5px
 </style>
