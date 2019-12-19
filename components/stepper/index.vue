@@ -1,109 +1,108 @@
 <template>
 <div class="amount amount-wrapper">
     <label class="md-field-item-label">{{label}}</label>
-  <div
-    class="md-stepper"
-    :class="{'disabled': disabled}"
-  >
+  <div class="md-stepper" :class="{'disabled': disabled}" >
     <button
       class="md-stepper-button md-stepper-button-reduce"
       :class="{'disabled': isMin}"
-      @click="$_reduce"
       :disabled="isMin"
-      @touchstart="" 
+      @click="$_reduce"
+      @touchstart=""
     >
-    <!-- @touchstart="" hack for iOS, implementation of :active class -->
-      <div class="outline"></div>
+    <!--@touchstart="" hack for iOS, implementation of :active class -->
+      <div class="outline" />
     </button>
     <div class="md-stepper-number">
-      <input type="tel"
-        :maxlength ="contentLength"
+      <input
+        class="md-stepper-input"
+        type="tel"
+        :maxlength="contentLength"
         :value="currentNum"
         :readOnly="readOnly"
+        :step="step"
         @input="$_onInput"
-        @blur="$_onChange">
+        @blur="$_onChange"
+>
     </div>
     <button
       class="md-stepper-button md-stepper-button-add"
       :disabled="isMax"
       :class="{'disabled': isMax}"
       @click="$_add"
-      @touchstart=""     
+      @touchstart=""
     >
-     <!-- @touchstart="" hack for iOS, implementation of :active class -->
-      <div class="outline"></div>
+     <!--@touchstart="" hack for iOS, implementation of :active class -->
+      <div class="outline" />
     </button>
   </div>
 </div>
 </template>
 
 <script>
-import {warn} from '../_util'
+import {warn} from '../_util';
 function getDecimalNum(num) {
   try {
-    return num.toString().split('.')[1].length
-  } catch (e) {
-    return 0
+    return num.toString().split('.')[1].length;
+  }
+  catch (e) {
+    return 0;
   }
 }
 
 function accAdd(num1, num2) {
-  let r1 = getDecimalNum(num1)
-  let r2 = getDecimalNum(num2)
-  let m = Math.pow(10, Math.max(r1, r2))
-  return +((num1 * m + num2 * m) / m)
+  let r1 = getDecimalNum(num1);
+  let r2 = getDecimalNum(num2);
+  let m = Math.pow(10, Math.max(r1, r2));
+  return +((num1 * m + num2 * m) / m);
 }
 
 function subtr(num1, num2) {
-  let r1 = getDecimalNum(num1)
-  let r2 = getDecimalNum(num2)
-  let m = Math.pow(10, Math.max(r1, r2))
-  let n = r1 >= r2 ? r1 : r2
-  return +((num1 * m - num2 * m) / m).toFixed(n)
+  let r1 = getDecimalNum(num1);
+  let r2 = getDecimalNum(num2);
+  let m = Math.pow(10, Math.max(r1, r2));
+  let n = r1 >= r2 ? r1 : r2;
+  return +((num1 * m - num2 * m) / m).toFixed(n);
 }
 
 export default {
-  name: 'md-stepper',
-
-  components: {},
-
+  name: 'MdStepper',
   props: {
     label: {
       type: String,
-      default: ""
+      default: ''
     },
     defaultValue: {
       type: [Number, String],
-      default: 0,
+      default: 0
     },
     value: {
       type: [Number, String],
-      default: 0,
+      default: 0
     },
     step: {
       type: [Number, String],
-      default: 1,
+      default: 1
     },
     min: {
       type: [Number, String],
-      default: -Number.MAX_VALUE,
+      default: -Number.MAX_VALUE
     },
     max: {
       type: [Number, String],
-      default: Number.MAX_VALUE,
+      default: Number.MAX_VALUE
     },
     disabled: {
       type: Boolean,
-      default: false,
+      default: false
     },
     readOnly: {
       type: Boolean,
-      default: false,
+      default: false
     },
     isInteger: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
 
   data() {
@@ -111,147 +110,150 @@ export default {
       isMin: false,
       isMax: false,
       currentNum: 0
-    }
+    };
   },
-
   computed: {
     contentLength() {
       if (!this.value) {
-        return 12
+        return 12;
       }
       return this.value ? Math.max(this.value.toString().length, 12) : 12;
-    },
+    }
   },
-
   watch: {
     defaultValue(val) {
-      this.currentNum = this.$_getCurrentNum(val)
+      this.currentNum = this.$_getCurrentNum(val);
     },
     value(val) {
-      this.currentNum = this.$_getCurrentNum(val)
+      this.currentNum = this.$_getCurrentNum(val);
     },
     min(val) {
       if (this.currentNum < val) {
-        this.currentNum = val
+        this.currentNum = val;
       }
-      this.$_checkStatus()
+      this.$_checkStatus();
     },
     max(val) {
       if (this.currentNum > val) {
-        this.currentNum = val
+        this.currentNum = val;
       }
-      this.$_checkStatus()
+      this.$_checkStatus();
     },
     currentNum(val, oldVal) {
-      this.$_checkStatus()
-
-      this.$emit('input', val)
-      this.$emit('change', val)
-
-      const diff = val - oldVal
-
+      this.$_checkStatus();
+      this.$emit('input', val);
+      this.$emit('change', val);
+      const diff = val - oldVal;
       // judge the event of operation
       if (diff > 0) {
-        this.$emit('increase', diff)
-      } else if (diff < 0) {
-        this.$emit('decrease', Math.abs(diff))
+        this.$emit('increase', diff);
       }
-    },
+      else if (diff < 0) {
+        this.$emit('decrease', Math.abs(diff));
+      }
+    }
   },
 
   mounted() {
     // verify that the minimum value is less than the maximum value
-    this.$_checkMinMax()
-    this.currentNum = this.$_getCurrentNum(this.value || this.defaultValue)
-    this.$_checkStatus()
+    this.$_checkMinMax();
+    this.currentNum = this.$_getCurrentNum(this.value || this.defaultValue);
+    this.$_checkStatus();
   },
 
   methods: {
     // MARK: 私有方法
     $_reduce() {
       if (this.disabled || this.isMin) {
-        return
+        return;
       }
-      this.currentNum = subtr(this.currentNum, this.step)
-      this.$_onChange()
+      this.currentNum = subtr(this.currentNum, this.step);
+      this.$_onChange();
     },
     $_add() {
       if (this.disabled || this.isMax) {
-        return
+        return;
       }
-      this.currentNum = accAdd(this.currentNum, this.step)
-      this.$_onChange()
+      this.currentNum = accAdd(this.currentNum, this.step);
+      this.$_onChange();
     },
     $_formatNum(value) {
       // @elist
-      value = String(value).replace(/[^0-9.-]/g, '')
-      return value === '' ? 0 : this.isInteger ? Math.floor(value) : +value
+      value = String(value).replace(/[^0-9.-]/g, '');
+      return value === '' ? 0 : this.isInteger ? Math.floor(value) : +value;
     },
     $_getCurrentNum(value) {
-      return Math.max(Math.min(this.max, this.$_formatNum(value)), this.min)
+      return Math.max(Math.min(this.max, this.$_formatNum(value)), this.min);
     },
     $_checkStatus() {
-      this.isMin = subtr(this.currentNum, this.step) < this.min
-      this.isMax = accAdd(this.currentNum, this.step) > this.max
+      this.isMin = subtr(this.currentNum, this.step) < this.min;
+      this.isMax = accAdd(this.currentNum, this.step) > this.max;
     },
     $_checkMinMax() {
       if (this.min > this.max) {
-        warn('[md-vue-stepper] minNum is larger than maxNum')
+        warn('[md-vue-stepper] minNum is larger than maxNum');
       }
-      return this.max > this.min
+      return this.max > this.min;
     },
 
     // MARK: 监听事件方法, 如 $_onButtonClick
     $_onInput(event) {
-      const {value} = event.target
-      const formatted = this.$_formatNum(value)
+      const {value} = event.target;
+      const formatted = this.$_formatNum(value);
       if (+value !== formatted) {
-        event.target.value = formatted
+        event.target.value = formatted;
       }
-      this.currentNum = formatted
+      this.currentNum = formatted;
     },
     $_onChange() {
-      this.currentNum = this.$_getCurrentNum(this.currentNum)
-    },
-  },
-}
+      this.currentNum = this.$_getCurrentNum(this.currentNum);
+      this.$emit('blur', this.currentNum);
+    }
+  }
+};
 
 </script>
 
 <style lang="stylus">
 .amount.amount-wrapper
-    background-color #ffffff
-    padding 0 17px
-    display flex
-    align-items center
-    justify-content space-between
+  background-color #ffffff
+  padding 0 17px
+  display flex
+  align-items center
+  justify-content space-between
+  .md-field-item-label
+      width 112px
+      font-size 16px
+      color #333333
+      margin-right 12px
+      white-space nowrap
+      overflow hidden
+      text-overflow ellipsis
   .md-stepper
     font-size 16px
     display flex
     align-items center
     justify-content flex-end
-    &.disabled
+    .disabled
       .md-stepper-button
         &:before,
         &:after
-          background-color #c9c9c9
+          background-color #c9c9c9 !important
       input
         opacity .3
-.amount.amount-wrapper > .md-field-item-label
-    margin-right 10px
 .md-stepper-button
   position relative
   width 50px
   height 30px
   border-radius 15px
   background #ffffff
-  border none 
+  border none
   outline none
   &:active
-    background #595959
+    background #595959 !important
     &:after,
     &:before
-      background #fff !important 
+      background #fff !important
   &:after
     content ""
     position absolute
@@ -271,12 +273,12 @@ export default {
       left 50%
       background #595959
       transform translate(-50%, -50%)
-&.disabled
+.disabled
   .outline
     border-color #c9c9c9
   &:before,
   &:after
-    background #c9c9c9
+    background #c9c9c9 !important
 .outline
   position absolute
   top 0
@@ -293,16 +295,18 @@ export default {
   transform-origin 50% 50%
 .md-stepper-number
   text-align center
-  input
-    width 130px
+  .md-stepper-input
+    width 116px
+    height 48px
     border none
     outline none
     font-size 16px
     padding 15px 0
+    margin-bottom 0
     background-color transparent
     box-sizing border-box
     text-align center
-    color #3086F5 /* 光标的颜色*/ 
-    text-shadow 0px 0px 0px #333 /* 文本颜色 */ 
+    color #3086F5 /* 光标的颜色*/
+    text-shadow 0px 0px 0px #333 /* 文本颜色 */
     -webkit-text-fill-color transparent
 </style>

@@ -1,5 +1,5 @@
-import textarea from '../../components/textarea/index';
-textarea.install = function (Vue) {
-  Vue.component(textarea.name, textarea);
+import mdTextarea from '../../components/textarea/index';
+mdTextarea.install = function (Vue) {
+  Vue.component(textarea.name, mdTextarea);
 };
-export default textarea;
+export default mdTextarea;

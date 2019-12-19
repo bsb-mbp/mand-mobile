@@ -1,11 +1,11 @@
 <template>
-  <div class="textarea-wrapper" :class="[align]">
+  <div class="textarea-wrapper" :class="[align, inputEnv]">
     <label class="md-field-item-label">{{label}}</label>
-    <div class="md-input-item-fake">
       <textarea
-        class="md-textarea-item"
         ref="textarea"
         v-model="inputValue"
+        :placeholder="placeholder"
+        class="md-textarea-item"
         :readonly="readonly"
         :maxlength="maxlength"
         :rows="rows"
@@ -14,164 +14,168 @@
         @blur="$_onBlur"
         @keyup="$_onKeyup"
         @keydown="$_onKeydown"
-      ></textarea>
-      <span
-        class="md-input-item-fake-placeholder "
-        v-if="inputValue === '' && placeholder !== ''"
-        v-text="placeholder"></span>
-    </div>
-    <slot name="footer"></slot>
+      />
     <div
-      class="md-textarea-item__clear"
       v-if="clearable && !readonly"
       v-show="!isInputEmpty && isInputFocus"
+      class="md-textarea-item__clear"
       @click="$_clearInput"
     >
-      <md-icon name="clear"></md-icon>
+      <md-icon name="clear" />
     </div>
   </div>
 </template>
 <script>
-import FieldItem from '../field-item'
-import Icon from '../icon'
+import Icon from '../icon';
+import {isIOS, isAndroid} from '../_util';
 export default {
-  name: 'md-textarea-item',
+  name: 'mdTextarea',
   components: {
-    [FieldItem.name]: FieldItem,
-    [Icon.name]: Icon,
+    [Icon.name]: Icon
   },
   props: {
     label: {
       type: String,
-      default: '',
+      default: ''
     },
     placeholder: {
       type: String,
-      default: '',
+      default: ''
     },
     value: {
       type: String,
-      default: '',
+      default: ''
     },
     maxlength: {
       type: [String, Number],
-      default: '',
+      default: ''
     },
     maxHeight: {
       type: [String, Number],
-      default: '66',
+      default: '66'
     },
     readonly: {
       type: Boolean,
-      default: false,
+      default: false
     },
     clearable: {
       type: Boolean,
-      default: false,
+      default: false
     },
     rows: {
       type: [String, Number],
-      default: '1',
+      default: '1'
     },
     autosize: {
       type: Boolean,
-      default: true,
+      default: true
     },
     align: {
       // left, center, right
       type: String,
-      default: 'right',
-    },
+      default: 'right'
+    }
   },
   data() {
     return {
       maxHeightInner: this.maxHeight,
       inputValue: this.value,
-      isInputFocus: false,
-    }
+      isInputFocus: false
+    };
   },
   computed: {
-    isInputEmpty() {
-      return !this.inputValue.length
+    inputEnv() {
+      /* istanbul ignore next */
+      if (isIOS) {
+        return 'is-ios';
+      }
+      else if (isAndroid) {
+        return 'is-android';
+      }
+      return 'is-browser';
     },
+    isInputEmpty() {
+      return !this.inputValue.length;
+    }
   },
   watch: {
     value(val) {
-      this.inputValue = val
-      this.resizeTextarea()
+      this.inputValue = val;
+      this.resizeTextarea();
     },
     inputValue(val) {
-      this.$emit('input', val)
-      this.$emit('change', val)
+      this.$emit('input', val);
+      this.$emit('change', val);
     },
     maxHeight(val) {
-      this.maxHeightInner = val
-      this.resizeTextarea()
-    },
+      this.maxHeightInner = val;
+      this.resizeTextarea();
+    }
   },
   mounted() {
-    this.resizeTextarea()
+    this.resizeTextarea();
   },
   methods: {
     $_onInput(event) {
-      this.inputValue = event.target.value
+      this.inputValue = event.target.value;
       this.$nextTick(() => {
-        this.resizeTextarea()
-      })
+        this.resizeTextarea();
+      });
     },
     $_clearInput() {
-      this.inputValue = ''
+      this.inputValue = '';
       this.$nextTick(() => {
-        this.resizeTextarea()
-      })
-      this.focus()
+        this.resizeTextarea();
+      });
+      this.$emit('clear', event);
+      this.focus();
     },
     $_onKeyup(event) {
-      this.$emit('keyup', event)
+      this.$emit('keyup', event);
     },
     $_onKeydown(event) {
-      this.$emit('keydown', event)
+      this.$emit('keydown', event);
     },
     $_onFocus() {
       this.isInputFocus = true;
-      this.$emit('focus')
+      this.$emit('focus');
     },
     $_onBlur() {
       setTimeout(() => {
-        this.isInputFocus = false
-        this.$emit('blur')
-      }, 100)
+        this.isInputFocus = false;
+        this.$emit('blur');
+      }, 100);
     },
     $_calcTextareaHeight(textarea) {
       // Triggers the textarea to repaint
-      textarea.style.height = 'auto'
-      let scrollHeight = textarea.scrollHeight
+      textarea.style.height = 'auto';
+      let scrollHeight = textarea.scrollHeight;
       if (this.maxHeightInner && scrollHeight > this.maxHeightInner) {
-        scrollHeight = this.maxHeightInner
+        scrollHeight = this.maxHeightInner;
       }
-      textarea.style.height = scrollHeight + 'px'
+      textarea.style.height = scrollHeight + 'px';
     },
     // public
     resizeTextarea() {
       if (this.autosize) {
-        this.$_calcTextareaHeight(this.$refs.textarea)
+        this.$_calcTextareaHeight(this.$refs.textarea);
       }
     },
     focus() {
-      this.$refs.textarea.focus()
+      this.$refs.textarea.focus();
       setTimeout(() => {
-        this.isInputFocus = true
-      }, 200)
+        this.isInputFocus = true;
+      }, 200);
     },
     blur() {
-      this.$refs.textarea.blur()
-      this.isInputFocus = false
+      this.$refs.textarea.blur();
+      this.isInputFocus = false;
     },
     getValue() {
-      return this.inputValue
-    },
-  },
-}
+      return this.inputValue;
+    }
+  }
+};
 </script>
 <style lang="stylus">
 .textarea-wrapper
@@ -179,24 +183,6 @@ export default {
     justify-content space-between
     padding 13px 17px
     background #fff
-    .md-input-item-fake
-      width 100%
-      position relative
-      display flex
-      align-items center
-      .md-input-item-fake-placeholder
-        display inline-block
-        line-height 22px
-        padding-top 0
-        font-size 16px
-        position absolute
-        left 0
-        top 0
-        width 100%
-        color #C9C9C9
-        white-space nowrap
-        overflow hidden
-        text-overflow ellipsis
     .md-field-item-label
       min-width 64px
       font-size 16px
@@ -209,9 +195,9 @@ export default {
     .md-textarea-item
         font-size 16px
         line-height 22px
-        color #3086F5 /* 光标的颜色*/ 
+        color #3086F5 /* 光标的颜色*/
         text-shadow 0px 0px 0px #333 /* 文本颜色 */
-        -webkit-text-fill-color transparent 
+        -webkit-text-fill-color transparent
         box-sizing border-box
         width 100%
         background transparent
@@ -239,14 +225,19 @@ export default {
       display flex
   .center
      .md-textarea-item,
-     .md-input-item-fake-placeholder 
+     .md-input-item-fake-placeholder
         text-align center
   .left
      .md-textarea-item,
-     .md-input-item-fake-placeholder 
-        text-align left 
+     .md-input-item-fake-placeholder
+        text-align left
   .right
      .md-textarea-item,
-     .md-input-item-fake-placeholder 
+     .md-input-item-fake-placeholder
         text-align right
+  .is-ios
+    .md-textarea-item
+          &::-webkit-input-placeholder
+            position relative
+            right 3px
 </style>
