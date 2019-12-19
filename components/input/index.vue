@@ -5,20 +5,20 @@
         <legend v-if="title" class="md-field-title" v-text="title" />
         <slot name="header" />
       </div>
-      <div class="md-field-action" @click="$_handleaction">
+      <div class="md-field-action" @click="$_handleAction">
         <div v-if="info" class="md-field-action-info">{{info}}<md-icon name="info" /></div>
-        <div v-else-if="edit" class="md-field-action-edit">{{postScript}}<md-icon name="edit" /></div>
+        <div v-else-if="edit" class="md-field-action-edit">{{postScript}}<md-icon name="edit" color="#c9c9c9" /></div>
         <slot v-else name="action" />
       </div>
     </header>
-    <div :class="{'line-bottom':isLine}">
+    <div :class="{'line-bottom': isLine}">
       <div v-if="size==='large'" class="unit">
         <i v-show="unit" class="unit-money"> {{unit}} </i>
       </div>
-      <div class="md-input-item md-field-item-content" :class="[size,align]">
+      <div class="md-input-item md-field-item-content" :class="[size, align]">
         <div v-if="label || $slots.left || icon" class="md-field-item-left">
           <label v-if="label" class="md-field-item-label" :class="{'is-icon':icon}" v-text="label" />
-          <md-icon v-if="icon" name="info" size="xs" color="#c9c9c9" @click="handleinfo" />
+          <md-icon v-if="icon" name="info" size="xs" color="#c9c9c9" @click="handleInfo" />
           <slot name="left" />
         </div>
         <div class="md-field-item-control" :class="[inputEnv]">
@@ -47,10 +47,10 @@
             class="md-input-item-clear"
             @click="$_clearInput"
           >
-            <md-icon name="clear" />
+            <md-icon name="clear" color="#898989" />
           </div>
         </div>
-        <div v-if="imgSrc || addon || $slots.right" class="md-field-item-right" @click="handleright">
+        <div v-if="imgSrc || addon || $slots.right" class="md-field-item-right" @click="handleRight">
           <slot name="right">{{addon}}</slot>
           <img v-if="imgSrc" class="img_icon" :src="imgSrc">
         </div>
@@ -76,7 +76,7 @@ import {noop, isIOS, isAndroid, randomId} from '../_util';
 import {formatValueByGapRule, formatValueByGapStep, trimValue} from '../_util/formate-value';
 
 export default {
-  name: 'inputItem',
+  name: 'InputItem',
   components: {
     [Icon.name]: Icon
   },
@@ -239,16 +239,7 @@ export default {
       let arr = ['万', '十万', '百万', '千万', '亿', '十亿', '百亿', '千亿'];
       let num = parseInt(this.inputValue, 0);
       var len = num.toString().length;
-      if (len < 5) {
-        return '';
-      }
-      else if (len >= 5 && len <= 12) {
-        len = len - 5;
-      }
-      else {
-        len = 7;
-      }
-      return arr[len];
+      return len < 5 ? '' : arr[Math.min(len, 12) - 5];
     }
   },
   watch: {
@@ -278,16 +269,15 @@ export default {
   },
   created() {
     this.inputValue = this.$_formateValue(this.$_subValue(this.value + '')).value;
-    console.log(this.inputValue);
   },
   methods: {
-    $_handleaction() {
+    $_handleAction() {
       this.$emit('handle-action');
     },
-    handleinfo() {
+    handleInfo() {
       this.$emit('handle-info');
     },
-    handleright() {
+    handleRight() {
       this.$emit('handle-right');
     },
     formation(event) {
@@ -399,16 +389,20 @@ export default {
     },
     $_onFocus(event) {
       this.$emit('focus', event);
+      this.focus();
     },
     $_onBlur(event) {
       this.$emit('blur', event);
+      this.blur();
     },
     // MARK: public methods
     focus() {
       this.$el.querySelector('.md-input-item-input').focus();
+      this.isInputFocus = true;
     },
     blur() {
       this.$el.querySelector('.md-input-item-input').blur();
+      this.isInputFocus = false;
     },
     getValue() {
       return this.inputValue;
