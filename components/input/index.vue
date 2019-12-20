@@ -21,10 +21,10 @@
           <md-icon v-if="icon" name="info" size="xs" color="#c9c9c9" @click="handleInfo" />
           <slot name="left" />
         </div>
-        <div class="md-field-item-control" :class="[inputEnv]">
+        <div class="md-field-item-control" :class="[inputEnv,readonly? 'is-readonly': '']">
           <div v-if="isRmb" class="rmb">￥</div>
             <input
-              ref="input-item"
+              ref="input"
               v-model="inputBindValue"
               class="md-input-item-input"
               :type="inputType"
@@ -219,7 +219,12 @@ export default {
         inputType = 'tel';
       }
       else if (inputType === 'money') {
-        inputType = 'number';
+        if (this.inputEnv === 'is-ios') {
+          inputType = 'number';
+        }
+        else {
+          inputType = 'tel';
+        }
       }
       return inputType;
     },
@@ -289,6 +294,7 @@ export default {
           event.currentTarget.value = this.inputValue = '';
         }
         else {
+
           event.currentTarget.value = this.inputValue;
         }
       }
@@ -384,7 +390,7 @@ export default {
     $_onKeydown(event) {
       this.$emit('keydown', event);
     },
-    $_onKeypress(vent) {
+    $_onKeypress(event) {
       this.$emit('keypress', event);
     },
     $_onFocus(event) {
@@ -397,11 +403,11 @@ export default {
     },
     // MARK: public methods
     focus() {
-      this.$el.querySelector('.md-input-item-input').focus();
+      this.$refs.input.focus();
       this.isInputFocus = true;
     },
     blur() {
-      this.$el.querySelector('.md-input-item-input').blur();
+      this.$refs.input.blur();
       this.isInputFocus = false;
     },
     getValue() {
@@ -429,13 +435,10 @@ export default {
       text-align right
   .md-input-item-input
     width 100%
-    position relative
     box-sizing border-box
     position relative
     z-index 2
-    line-height normal
     background-color transparent !important
-    width 100%
     height 48px
     line-height 22px
     font-size 16px
@@ -443,11 +446,13 @@ export default {
     margin-bottom 0
     border-radius 3px
     color #3086F5 !important
-    text-shadow 0px 0px 0px #333
+    text-shadow 0 0 0 #333
     -webkit-text-fill-color transparent
     border none
     outline none
     appearance none
+    &[disabled]
+      text-shadow 0 0 0 #898989
     &::-webkit-input-placeholder
       color #C9C9C9
       text-shadow none
@@ -517,8 +522,6 @@ export default {
         padding 0
         &::-webkit-input-placeholder
           font-size 20px
-        &:disabled, &[disabled]
-          text-shadow 0px 0px 0px #898989
         &::-webkit-outer-spin-button, &::-webkit-inner-spin-button
           appearance none
 .unit
@@ -536,9 +539,9 @@ export default {
   &::after
     content ""
     position absolute
-    bottom 0px
+    bottom 0
     left 17px
-    right 0px
+    right 0
     border-bottom 1px solid #eaeaea
     transform scaleY(.5)
     transform-origin 0 0
@@ -561,7 +564,7 @@ export default {
     line-height 18px
 .is-readonly
   .md-input-item-input
-    text-shadow 0px 0px 0px #898989
+    text-shadow 0 0 0 #898989
 
 .md-field-item-content
     position relative
@@ -610,7 +613,7 @@ export default {
 .md-field-item-children
     font-size 13px
     color #898989
-    padding 8px 17px 16px 0px
+    padding 8px 17px 16px 0
     line-height 20px
     margin-left 17px
     position relative
