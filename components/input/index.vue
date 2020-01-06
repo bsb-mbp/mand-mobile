@@ -40,6 +40,10 @@
               @keydown="$_onKeydown"
               @keypress="$_onKeypress"
               @input="$_onInput"
+              @paste="$_onPaste"
+              @copy="$_onCopy"
+              @cut="$_onCut"
+              @contextmenu="$_onContextmenu"
             >
           <div
             v-if="clearable && !disabled"
@@ -50,9 +54,10 @@
             <md-icon name="clear" color="#898989" />
           </div>
         </div>
-        <div v-if="imgSrc || addon || $slots.right" class="md-field-item-right" @click="handleRight">
+        <div v-if="imgSrc || addon || arrowRight || $slots.right" class="md-field-item-right" @click="handleRight">
           <slot name="right">{{addon}}</slot>
           <img v-if="imgSrc" class="img_icon" :src="imgSrc">
+          <md-icon v-if="arrowRight" name="arrow-right" color="aeaeae" size="xs" />
         </div>
       </div>
       <div v-if="isInputBrief()" class="md-field-item-children">
@@ -177,6 +182,10 @@ export default {
       default: ''
     },
     noLine: {
+      type: Boolean,
+      default: false
+    },
+    arrowRight: {
       type: Boolean,
       default: false
     },
@@ -410,6 +419,18 @@ export default {
       this.$refs.input.blur();
       this.isInputFocus = false;
     },
+    $_onPaste(event) {
+      this.$emit('paste', event);
+    },
+    $_onCopy(event) {
+      this.$emit('copy', event);
+    },
+    $_onContextmenu(event) {
+      this.$emit('contextmenu', event);
+    },
+    $_onCut(event) {
+      this.$emit('cut', event);
+    },
     getValue() {
       return this.inputValue;
     }
@@ -607,7 +628,7 @@ export default {
       position relative
       justify-content center
       margin-left 5px
-      .img_icon
+      .img_icon,.md-icon.icon-svg.xs
         width 22px
         height 22px
 .md-field-item-children
