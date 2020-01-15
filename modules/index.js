@@ -5,7 +5,7 @@ import actionsheet from './action-sheet/index';
 import textarea from './textarea/index';
 import input from './input/index';
 import stepper from './stepper/index';
-// import inputSearch from './input-search/index'
+import inputSearch from './input-search/index'
 
 export default {
   timeline,
@@ -14,6 +14,6 @@ export default {
   actionsheet,
   input,
   textarea,
-  stepper
-  // inputSearch
+  stepper,
+  inputSearch
 }

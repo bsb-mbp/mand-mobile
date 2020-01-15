@@ -1,5 +1,5 @@
-import Input from '../../components/input-item/index';
-Input.install = function (Vue) {
-  Vue.component(Input.name, Input);
+import inputItem from '../../components/input-item/index';
+inputItem.install = function (Vue) {
+  Vue.component(inputItem.name, inputItem);
 };
-export default Input;
+export default inputItem;
