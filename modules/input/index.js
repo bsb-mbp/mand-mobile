@@ -1,5 +1,5 @@
-import mdInput from '../../components/md-input/index';
-mdInput.install = function (Vue) {
-  Vue.component(mdInput.name, mdInput);
+import input from '../../components/input/index';
+input.install = function (Vue) {
+  Vue.component(input.name, input);
 };
-export default mdInput;
+export default input;

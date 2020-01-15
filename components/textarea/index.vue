@@ -207,7 +207,6 @@ export default {
         appearance none
         -webkit-tap-highlight-color transparent
         position relative
-        z-index 99
         &::-webkit-input-placeholder
             color #C9C9C9
             font-size 16px

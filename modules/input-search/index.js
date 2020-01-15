@@ -1,5 +1,5 @@
-import search from '../../components/input-search/index';
-search.install = function (Vue) {
-  Vue.component(search.name, search);
+import inputSearch from '../../components/input-search/index';
+inputSearch.install = function (Vue) {
+  Vue.component(inputSearch.name, inputSearch);
 };
 export default inputSearch;
